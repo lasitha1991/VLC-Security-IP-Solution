@@ -19,10 +19,11 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lvlc
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lvlc
-else:symbian: LIBS += -lvlc
-else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lvlc
 
-INCLUDEPATH += $$PWD/../../../../usr/include
-DEPENDPATH += $$PWD/../../../../usr/include
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../usr/lib/release/ -lvlc
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../usr/lib/debug/ -lvlc
+else:symbian: LIBS += -lvlc
+else:unix: LIBS += -L$$PWD/../../../usr/lib/ -lvlc
+
+INCLUDEPATH += $$PWD/../../../usr/include
+DEPENDPATH += $$PWD/../../../usr/include

@@ -40,5 +40,6 @@ void MainWindow::on_Btnplay_clicked()
 
 void MainWindow::on_BtnStream_clicked()
 {
-    p->stream(ui->BtnStream);
+    QString address=ui->txtClientAddr->text();
+    p->stream(ui->BtnStream,address);
 }

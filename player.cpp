@@ -8,6 +8,9 @@
 libvlc_instance_t *inst;
 libvlc_media_player_t *mp;
 libvlc_media_t *m;
+//char *filePath = "../Thank_you.flv";
+char *filePath = "../Bolt.avi";
+
 
 player::player(QObject *parent) :    QObject(parent)
 {
@@ -49,7 +52,7 @@ void player::stop()
 
 void player::load(QWidget *dis){
     // create a new item
-    m = libvlc_media_new_path(inst, "/home/lasitha/Thank_you.flv");
+    m = libvlc_media_new_path(inst, filePath);
     if(!m)
         exit(EXIT_FAILURE);
     // create a media play playing environment
@@ -131,14 +134,17 @@ void player::mute(QSlider *sli) {
     }
 }
 
-void player::stream(QPushButton *bu){ //must be a unicast stream
+void player::stream(QPushButton *bu,QString clientAddress){ //must be a unicast stream
+    QByteArray ba="udp://"+clientAddress.toLocal8Bit();
     bu->setText("Started");
-    libvlc_vlm_add_broadcast(inst, "Thank_you.flv", "/home/lasitha/Thank_you.flv", "#transcode{acodec=mp4a,ab=128,channels=2," \
-                                 "samplerate=44100}:rtsp{dst=:8090/go.mp3}", 0, NULL, true, false);
+    //libvlc_vlm_add_broadcast(inst, "Thank_you.flv", filePath, "#transcode{acodec=mp4a,ab=128,channels=2," \
+    //                             "samplerate=44100}:rtsp{dst=:8090/go.mp3}", 0, NULL, true, false);
+    libvlc_vlm_add_broadcast(inst, "Thank_you.flv", filePath, ba.data(), 0, NULL, true, false);
     libvlc_vlm_play_media(inst, "Thank_you.flv");
 
-    sleep(30); /* Let it play for a minute */
-
+    play(bu);
+    sleep(20); /* Let it play for sometime */
+    stop();
     libvlc_vlm_stop_media(inst, "Thank_you.flv");
     libvlc_vlm_release(inst);
     bu->setText("Streamed");
