@@ -131,7 +131,7 @@ void player::mute(QSlider *sli) {
     }
 }
 
-void player::stream(QPushButton *bu){ //must be a unicast stream
+void player::stream(QPushButton *bu){
     bu->setText("Started");
     libvlc_vlm_add_broadcast(inst, "Thank_you.flv", "/home/lasitha/Thank_you.flv", "#transcode{acodec=mp4a,ab=128,channels=2," \
                                  "samplerate=44100}:rtsp{dst=:8090/go.mp3}", 0, NULL, true, false);
@@ -146,7 +146,6 @@ void player::stream(QPushButton *bu){ //must be a unicast stream
 
 void player::receiveStream(){
         //code to recieve the stream
-	//stream must be unicast
 }
 
 libvlc_media_player_t* player::getMP(){
