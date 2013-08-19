@@ -239,7 +239,7 @@ void player::saveWebcamToFile(QPushButton *bu){
     libvlc_vlm_stop_media(inst, "videosave");
     libvlc_vlm_release(inst);
     bu->setText("Saved "+clipNumber);
-    if(clipNumber!='3'){
+    if(clipNumber!='4'){
         clipNumber++;
     }else{
         clipNumber='0';
@@ -247,22 +247,26 @@ void player::saveWebcamToFile(QPushButton *bu){
 }
 void player::streamLastMinute(){
     if(clipNumber=='0'){
+        streamCaptureClip('4');
         streamCaptureClip('3');
         streamCaptureClip('2');
-        streamCaptureClip('1');
     }
     else if(clipNumber=='1'){
         streamCaptureClip('0');
+        streamCaptureClip('4');
         streamCaptureClip('3');
-        streamCaptureClip('2');
     }else if(clipNumber=='2'){
         streamCaptureClip('1');
         streamCaptureClip('0');
-        streamCaptureClip('3');
+        streamCaptureClip('4');
     }else if(clipNumber=='3'){
         streamCaptureClip('2');
         streamCaptureClip('1');
         streamCaptureClip('0');
+    }else if(clipNumber=='4'){
+        streamCaptureClip('3');
+        streamCaptureClip('2');
+        streamCaptureClip('1');
     }
 }
 void player::streamCaptureClip(char clip){ //must be a unicast stream
