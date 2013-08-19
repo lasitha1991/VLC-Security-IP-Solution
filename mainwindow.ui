@@ -55,12 +55,12 @@
      <rect>
       <x>170</x>
       <y>170</y>
-      <width>113</width>
+      <width>141</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>10.8.98.2</string>
+     <string>udp://10.8.98.2</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelClientAddr">

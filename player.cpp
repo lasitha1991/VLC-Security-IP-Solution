@@ -4,12 +4,14 @@
 #include <vlc/vlc.h>
 #include <mainwindow.h>
 #include "ui_mainwindow.h"
+#include <string.h>
 
 libvlc_instance_t *inst;
 libvlc_media_player_t *mp;
 libvlc_media_t *m;
 //char *filePath = "../Thank_you.flv";
 char *filePath = "../Bolt.avi";
+char *clientAddress="udp://10.8.98.2";
 
 
 player::player(QObject *parent) :    QObject(parent)
@@ -134,24 +136,35 @@ void player::mute(QSlider *sli) {
     }
 }
 
-void player::stream(QPushButton *bu,QString clientAddress){ //must be a unicast stream
-    QByteArray ba="udp://"+clientAddress.toLocal8Bit();
+void player::stream(QPushButton *bu){ //must be a unicast stream
     bu->setText("Started");
     //libvlc_vlm_add_broadcast(inst, "Thank_you.flv", filePath, "#transcode{acodec=mp4a,ab=128,channels=2," \
     //                             "samplerate=44100}:rtsp{dst=:8090/go.mp3}", 0, NULL, true, false);
-    libvlc_vlm_add_broadcast(inst, "Thank_you.flv", filePath, ba.data(), 0, NULL, true, false);
-    libvlc_vlm_play_media(inst, "Thank_you.flv");
+    libvlc_vlm_add_broadcast(inst, "video stream", filePath, clientAddress, 0, NULL, true, false);
+    libvlc_vlm_play_media(inst, "video stream");
 
-    play(bu);
+    //play(bu);
     sleep(20); /* Let it play for sometime */
-    stop();
-    libvlc_vlm_stop_media(inst, "Thank_you.flv");
-    libvlc_vlm_release(inst);
-    bu->setText("Streamed");
+    //stop();
+    libvlc_vlm_stop_media(inst, "video stream");
+    libvlc_vlm_release(inst);    
+    bu->setText(clientAddress);
+}
+void player::setClientAddress(QString addr){    
+    //check with unit testing
+
+    //QByteArray ba=addr.toLocal8Bit();
+    //ba.append(addr);
+    //char client[addr.count()+1];
+    //for(int i=0;i<addr.count();i++){
+    //    client[i]=addr.at(i);
+    //}
+    //client[addr.count()]="\0";
+    //clientAddress=client;
 }
 
 void player::receiveStream(){
-        //code to recieve the stream
+    //code to recieve the stream
 	//stream must be unicast
 }
 

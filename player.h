@@ -33,7 +33,8 @@ public slots:
     void changePosition(int pos);
     void changeVolume(int val);
     void mute(QSlider *sli);
-    void stream(QPushButton *bu,QString txt);
+    void stream(QPushButton *bu);
+    void setClientAddress(QString addr);
     void receiveStream();
     libvlc_media_player_t *getMP();
 };

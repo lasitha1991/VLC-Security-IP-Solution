@@ -40,6 +40,8 @@ void MainWindow::on_Btnplay_clicked()
 
 void MainWindow::on_BtnStream_clicked()
 {
-    QString address=ui->txtClientAddr->text();
-    p->stream(ui->BtnStream,address);
+    QLineEdit *le=ui->txtClientAddr;
+    QString addr=le->text();    
+    p->setClientAddress(addr);
+    p->stream(ui->BtnStream);
 }
