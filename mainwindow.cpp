@@ -60,3 +60,8 @@ void MainWindow::on_BtnSaveWebCam_clicked()
 {
     p->saveWebcamToFile(ui->BtnSaveWebCam);
 }
+
+void MainWindow::on_BtnLastMinStream_clicked()
+{
+    p->streamLastMinute();
+}

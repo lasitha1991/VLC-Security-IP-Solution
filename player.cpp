@@ -11,8 +11,10 @@ libvlc_media_player_t *mp;
 libvlc_media_t *m;
 //char *filePath = "../Thank_you.flv";
 char *filePath = "../Bolt.avi";
-char *clientAddress="udp://10.8.98.2:1234";
-char *serverAddress="udp://10.8.98.1";
+char fileName[12]="capture.avi";
+char *clientAddress="udp://10.8.98.1";
+char *serverAddress="udp://10.8.98.2";
+char clipNumber='0';
 
 
 player::player(QObject *parent) :    QObject(parent)
@@ -223,7 +225,12 @@ void player::loadWebCam(QWidget *dis,QPushButton *bu){
 }
 void player::saveWebcamToFile(QPushButton *bu){
     bu->setText("Started");
-    libvlc_vlm_add_broadcast(inst, "videosave", "v4l2:///dev/video0", "capture.avi", 0, NULL, true, false);
+    char file[12];
+    file[0]=clipNumber;
+    for(int i=1;i<12;i++){
+        file[i]=fileName[i-1];
+    }
+    libvlc_vlm_add_broadcast(inst, "videosave", "v4l2:///dev/video0", file, 0, NULL, true, false);
     libvlc_vlm_play_media(inst, "videosave");
 
     //play(bu);
@@ -231,8 +238,52 @@ void player::saveWebcamToFile(QPushButton *bu){
     //stop();
     libvlc_vlm_stop_media(inst, "videosave");
     libvlc_vlm_release(inst);
-    bu->setText(clientAddress);
+    bu->setText("Saved "+clipNumber);
+    if(clipNumber!='3'){
+        clipNumber++;
+    }else{
+        clipNumber='0';
+    }
 }
+void player::streamLastMinute(){
+    if(clipNumber=='0'){
+        streamCaptureClip('3');
+        streamCaptureClip('2');
+        streamCaptureClip('1');
+    }
+    else if(clipNumber=='1'){
+        streamCaptureClip('0');
+        streamCaptureClip('3');
+        streamCaptureClip('2');
+    }else if(clipNumber=='2'){
+        streamCaptureClip('1');
+        streamCaptureClip('0');
+        streamCaptureClip('3');
+    }else if(clipNumber=='3'){
+        streamCaptureClip('2');
+        streamCaptureClip('1');
+        streamCaptureClip('0');
+    }
+}
+void player::streamCaptureClip(char clip){ //must be a unicast stream
+
+    char file[12];
+    file[0]=clip;
+    for(int i=1;i<12;i++){
+        file[i]=fileName[i-1];
+    }
+    libvlc_vlm_add_broadcast(inst, "video stream", file, clientAddress, 0, NULL, true, false);
+    libvlc_vlm_play_media(inst, "video stream");
+
+    //play(bu);
+    sleep(20); /* Let it play for sometime */
+    //stop();
+    libvlc_vlm_stop_media(inst, "video stream");
+    libvlc_vlm_release(inst);
+
+}
+
+
 
 libvlc_media_player_t* player::getMP(){
     return mp;
