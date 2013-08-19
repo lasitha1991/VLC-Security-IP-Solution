@@ -53,5 +53,5 @@ void MainWindow::on_BtnReceive_clicked()
 
 void MainWindow::on_BtnWebCam_clicked()
 {
-    p->loadWebCam(ui->display,ui->BtnReceive);
+    p->loadWebCam(ui->display,ui->BtnWebCam);
 }

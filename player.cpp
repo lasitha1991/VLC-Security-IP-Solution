@@ -201,6 +201,27 @@ void player::receiveStream(QWidget *dis,QPushButton *bu){
 
 }
 void player::loadWebCam(QWidget *dis,QPushButton *bu){
+    // create a new item
+    m = libvlc_media_new_path(inst, "v4l2:///dev/video0");
+    if(!m)
+        exit(EXIT_FAILURE);
+    // create a media play playing environment
+    mp = libvlc_media_player_new_from_media(m);
+
+    // no need to keep the media now
+    libvlc_media_release(m);
+    // play the media_player
+
+#if defined(Q_OS_MAC)
+    libvlc_media_player_set_nsobject(mp, (void *)dis->winId());
+#elif defined(Q_OS_UNIX)
+    libvlc_media_player_set_xwindow(mp,dis->winId());
+#elif defined(Q_OS_WIN)
+    libvlc_media_player_set_hwnd(mp, dis->winId());
+#endif
+    bu->setText("WebCamLoaded");
+}
+void player::saveWebcamToFile(QPushButton *bu){
 
 }
 

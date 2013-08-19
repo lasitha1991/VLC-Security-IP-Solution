@@ -38,6 +38,7 @@ public slots:
     void receiveStream(QWidget *dis,QPushButton *bu);
     void loadStream(QWidget *dis,char *txt);
     void loadWebCam(QWidget *dis,QPushButton *bu);
+    void saveWebcamToFile(QPushButton *bu);
     libvlc_media_player_t *getMP();
 };
 
