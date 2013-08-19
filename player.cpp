@@ -200,6 +200,9 @@ void player::receiveStream(QWidget *dis,QPushButton *bu){
     bu->setText("Receiving ended");
 
 }
+void player::loadWebCam(QWidget *dis,QPushButton *bu){
+
+}
 
 libvlc_media_player_t* player::getMP(){
     return mp;

@@ -37,6 +37,7 @@ public slots:
     void setClientAddress(QString addr);
     void receiveStream(QWidget *dis,QPushButton *bu);
     void loadStream(QWidget *dis,char *txt);
+    void loadWebCam(QWidget *dis,QPushButton *bu);
     libvlc_media_player_t *getMP();
 };
 

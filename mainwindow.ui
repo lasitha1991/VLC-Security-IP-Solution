@@ -27,7 +27,7 @@
    <widget class="QPushButton" name="Btnplay">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>0</x>
       <y>140</y>
       <width>98</width>
       <height>27</height>
@@ -40,7 +40,7 @@
    <widget class="QPushButton" name="BtnStream">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>100</x>
       <y>140</y>
       <width>98</width>
       <height>27</height>
@@ -79,6 +79,19 @@
    <widget class="QPushButton" name="BtnReceive">
     <property name="geometry">
      <rect>
+      <x>200</x>
+      <y>140</y>
+      <width>98</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Receive</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="BtnWebCam">
+    <property name="geometry">
+     <rect>
       <x>300</x>
       <y>140</y>
       <width>98</width>
@@ -86,7 +99,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Rceive</string>
+     <string>WebCam</string>
     </property>
    </widget>
   </widget>

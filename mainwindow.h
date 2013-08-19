@@ -22,6 +22,8 @@ private slots:
 
     void on_BtnReceive_clicked();
 
+    void on_BtnWebCam_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

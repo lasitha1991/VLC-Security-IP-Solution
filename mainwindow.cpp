@@ -50,3 +50,8 @@ void MainWindow::on_BtnReceive_clicked()
 {
     p->receiveStream(ui->display,ui->BtnReceive);
 }
+
+void MainWindow::on_BtnWebCam_clicked()
+{
+    p->loadWebCam(ui->display,ui->BtnReceive);
+}
