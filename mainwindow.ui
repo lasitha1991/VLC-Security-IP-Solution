@@ -76,6 +76,19 @@
      <string>Enter ClientAddress:</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="BtnReceive">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>140</y>
+      <width>98</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rceive</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

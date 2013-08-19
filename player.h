@@ -35,7 +35,8 @@ public slots:
     void mute(QSlider *sli);
     void stream(QPushButton *bu);
     void setClientAddress(QString addr);
-    void receiveStream();
+    void receiveStream(QWidget *dis,QPushButton *bu);
+    void loadStream(QWidget *dis,char *txt);
     libvlc_media_player_t *getMP();
 };
 

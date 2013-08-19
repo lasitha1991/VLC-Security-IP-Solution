@@ -72,6 +72,27 @@ void player::load(QWidget *dis){
     libvlc_media_player_set_hwnd(mp, dis->winId());
 #endif
 }
+void player::loadStream(QWidget *dis,char *streamName){
+    // create a new item
+    m = libvlc_media_new_location(inst, streamName);
+    if(!m)
+        exit(EXIT_FAILURE);
+    // create a media play playing environment
+    mp = libvlc_media_player_new_from_media(m);
+
+    // no need to keep the media now
+    libvlc_media_release(m);
+    // play the media_player
+
+#if defined(Q_OS_MAC)
+    libvlc_media_player_set_nsobject(mp, (void *)dis->winId());
+#elif defined(Q_OS_UNIX)
+    libvlc_media_player_set_xwindow(mp,dis->winId());
+#elif defined(Q_OS_WIN)
+    libvlc_media_player_set_hwnd(mp, dis->winId());
+#endif
+}
+
 
 int player::getTime()
 {
@@ -163,9 +184,20 @@ void player::setClientAddress(QString addr){
     //clientAddress=client;
 }
 
-void player::receiveStream(){
+void player::receiveStream(QWidget *dis,QPushButton *bu){
     //code to recieve the stream
 	//stream must be unicast
+    bu->setText("Receiving Started");
+    //libvlc_vlm_add_input 	( 	inst, "InputStream", "udp://10.8.98.1:1234");
+    loadStream(dis,"udp://10.8.98.1");
+    //libvlc_vlm_play_media(inst, "InputStream");
+    play(bu);
+    sleep(25); /* Let it play for sometime */
+    stop();
+    //libvlc_vlm_stop_media(inst, "InputStream");
+    //libvlc_vlm_release(inst);
+    bu->setText("Receiving ended");
+
 }
 
 libvlc_media_player_t* player::getMP(){

@@ -45,3 +45,8 @@ void MainWindow::on_BtnStream_clicked()
     p->setClientAddress(addr);
     p->stream(ui->BtnStream);
 }
+
+void MainWindow::on_BtnReceive_clicked()
+{
+    p->receiveStream(ui->display,ui->BtnReceive);
+}

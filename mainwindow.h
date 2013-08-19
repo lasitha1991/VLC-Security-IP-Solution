@@ -20,6 +20,8 @@ private slots:
 
     void on_BtnStream_clicked();
 
+    void on_BtnReceive_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
