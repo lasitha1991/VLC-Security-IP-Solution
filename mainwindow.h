@@ -24,6 +24,8 @@ private slots:
 
     void on_BtnWebCam_clicked();
 
+    void on_BtnSaveWebCam_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

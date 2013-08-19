@@ -222,7 +222,16 @@ void player::loadWebCam(QWidget *dis,QPushButton *bu){
     bu->setText("WebCamLoaded");
 }
 void player::saveWebcamToFile(QPushButton *bu){
+    bu->setText("Started");
+    libvlc_vlm_add_broadcast(inst, "videosave", "v4l2:///dev/video0", "capture.avi", 0, NULL, true, false);
+    libvlc_vlm_play_media(inst, "videosave");
 
+    //play(bu);
+    sleep(20); /* Let it play for sometime */
+    //stop();
+    libvlc_vlm_stop_media(inst, "videosave");
+    libvlc_vlm_release(inst);
+    bu->setText(clientAddress);
 }
 
 libvlc_media_player_t* player::getMP(){

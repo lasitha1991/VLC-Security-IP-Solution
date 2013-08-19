@@ -55,3 +55,8 @@ void MainWindow::on_BtnWebCam_clicked()
 {
     p->loadWebCam(ui->display,ui->BtnWebCam);
 }
+
+void MainWindow::on_BtnSaveWebCam_clicked()
+{
+    p->saveWebcamToFile(ui->BtnSaveWebCam);
+}
