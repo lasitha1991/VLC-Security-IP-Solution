@@ -230,7 +230,7 @@ void player::saveWebcamToFile(QPushButton *bu){
     for(int i=1;i<12;i++){
         file[i]=fileName[i-1];
     }
-    libvlc_vlm_add_broadcast(inst, "videosave", "v4l2:///dev/video0", file, 0, NULL, true, false);
+    libvlc_vlm_add_broadcast(inst, "videosave", "v4l2:///dev/video0", "#transcode{vcodec=h264,vb=0,scale=0,acodec=mpga,ab=128,channels=2,samplerate=44100}:file{dst=capture.mp4}", 0, NULL, true, false);
     libvlc_vlm_play_media(inst, "videosave");
 
     //play(bu);
