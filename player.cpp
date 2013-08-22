@@ -195,9 +195,9 @@ void player::receiveStream(QWidget *dis,QPushButton *bu){
     //libvlc_vlm_add_input 	( 	inst, "InputStream", "udp://10.8.98.1:1234");
     loadStream(dis,serverAddress);
     //libvlc_vlm_play_media(inst, "InputStream");
-    play(bu);
-    sleep(25); /* Let it play for sometime */
-    stop();
+    //play(bu);
+    //sleep(25); /* Let it play for sometime */
+    //stop();
     //libvlc_vlm_stop_media(inst, "InputStream");
     //libvlc_vlm_release(inst);
     bu->setText("Receiving ended");
