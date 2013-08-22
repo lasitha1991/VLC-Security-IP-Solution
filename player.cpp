@@ -11,9 +11,10 @@ libvlc_media_player_t *mp;
 libvlc_media_t *m;
 //char *filePath = "../Thank_you.flv";
 char *filePath = "../Bolt.avi";
-char fileName[12]="capture.avi";
-char *clientAddress="udp://10.8.98.1";
-char *serverAddress="udp://10.8.98.2";
+char soutraw[60]="#transcode{vcodec=mp4v,vb=0,scale=0}:file{dst=_capture.mp4}";
+char *fileName="capture.mp4";
+char *clientAddress="udp://127.0.0.1";
+char *serverAddress="udp://127.0.0.1:1234";
 char clipNumber='0';
 
 
@@ -225,50 +226,57 @@ void player::loadWebCam(QWidget *dis,QPushButton *bu){
 }
 void player::saveWebcamToFile(QPushButton *bu){
     bu->setText("Started");
-    char file[12];
-    file[0]=clipNumber;
-    for(int i=1;i<12;i++){
-        file[i]=fileName[i-1];
-    }
-    libvlc_vlm_add_broadcast(inst, "videosave", "v4l2:///dev/video0", "#transcode{vcodec=h264,vb=0,scale=0,acodec=mpga,ab=128,channels=2,samplerate=44100}:file{dst=capture.mp4}", 0, NULL, true, false);
+    char sout[60];
+    sout[46]=clipNumber;
+    for(int i=0;i<60;i++){
+        if(i!=46){
+            sout[i]=soutraw[i];
+        }
+    }    
+
+    libvlc_vlm_add_broadcast(inst, "videosave", "v4l2:///dev/video0", sout, 0, NULL, true, false);
     libvlc_vlm_play_media(inst, "videosave");
+
 
     //play(bu);
     sleep(20); /* Let it play for sometime */
     //stop();
     libvlc_vlm_stop_media(inst, "videosave");
     libvlc_vlm_release(inst);
-    bu->setText("Saved "+clipNumber);
+    bu->setText("Saved");
     if(clipNumber!='4'){
         clipNumber++;
     }else{
         clipNumber='0';
     }
 }
+
+
 void player::streamLastMinute(){
     if(clipNumber=='0'){
-        streamCaptureClip('4');
-        streamCaptureClip('3');
         streamCaptureClip('2');
+        streamCaptureClip('3');
+        streamCaptureClip('4');
     }
     else if(clipNumber=='1'){
-        streamCaptureClip('0');
-        streamCaptureClip('4');
         streamCaptureClip('3');
+        streamCaptureClip('4');
+        streamCaptureClip('0');
     }else if(clipNumber=='2'){
-        streamCaptureClip('1');
-        streamCaptureClip('0');
         streamCaptureClip('4');
-    }else if(clipNumber=='3'){
-        streamCaptureClip('2');
-        streamCaptureClip('1');
         streamCaptureClip('0');
-    }else if(clipNumber=='4'){
-        streamCaptureClip('3');
-        streamCaptureClip('2');
         streamCaptureClip('1');
+    }else if(clipNumber=='3'){
+        streamCaptureClip('0');
+        streamCaptureClip('1');
+        streamCaptureClip('2');
+    }else if(clipNumber=='4'){
+        streamCaptureClip('1');
+        streamCaptureClip('2');
+        streamCaptureClip('3');
     }
 }
+
 void player::streamCaptureClip(char clip){ //must be a unicast stream
 
     char file[12];
