@@ -28,6 +28,8 @@ private slots:
 
     void on_BtnLastMinStream_clicked();
 
+    void on_BtnRecoreOneMin_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -128,6 +128,19 @@
      <string>StreamLastMinute</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="BtnRecoreOneMin">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>200</y>
+      <width>171</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Record One Minute</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

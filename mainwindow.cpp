@@ -65,3 +65,8 @@ void MainWindow::on_BtnLastMinStream_clicked()
 {
     p->streamLastMinute();
 }
+
+void MainWindow::on_BtnRecoreOneMin_clicked()
+{
+    p->recordOneMin(ui->BtnRecoreOneMin);
+}

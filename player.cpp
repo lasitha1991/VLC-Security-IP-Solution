@@ -250,7 +250,11 @@ void player::saveWebcamToFile(QPushButton *bu){
         clipNumber='0';
     }
 }
-
+void player::recordOneMin(QPushButton *bu){
+    saveWebcamToFile(bu);
+    saveWebcamToFile(bu);
+    saveWebcamToFile(bu);
+}
 
 void player::streamLastMinute(){
     if(clipNumber=='0'){
