@@ -5,6 +5,7 @@
 #include <vlc/vlc.h>
 #include <player.h>
 
+
 bool isplay=true;
 player *p=new player();
 
@@ -42,7 +43,7 @@ void MainWindow::on_BtnStream_clicked()
 {
     QLineEdit *le=ui->txtClientAddr;
     QString addr=le->text();    
-    p->setClientAddress(addr);
+    p->setClientAddress(addr);    
     p->stream(ui->BtnStream);
 }
 

@@ -5,6 +5,7 @@
 #include <mainwindow.h>
 #include "ui_mainwindow.h"
 #include <string.h>
+#include "streamthread.h"
 
 libvlc_instance_t *inst;
 libvlc_media_player_t *mp;
@@ -162,18 +163,17 @@ void player::mute(QSlider *sli) {
 }
 
 void player::stream(QPushButton *bu){ //must be a unicast stream
+    StreamThread st;
+    st.setInst(inst);
+    st.setFileName(filePath);
+    st.setclientAddress(clientAddress);
+    st.start();
     bu->setText("Started");
     //libvlc_vlm_add_broadcast(inst, "Thank_you.flv", filePath, "#transcode{acodec=mp4a,ab=128,channels=2," \
     //                             "samplerate=44100}:rtsp{dst=:8090/go.mp3}", 0, NULL, true, false);
-    libvlc_vlm_add_broadcast(inst, "video stream", filePath, clientAddress, 0, NULL, true, false);
-    libvlc_vlm_play_media(inst, "video stream");
-
-    //play(bu);
-    sleep(20); /* Let it play for sometime */
-    //stop();
-    libvlc_vlm_stop_media(inst, "video stream");
-    libvlc_vlm_release(inst);    
+    sleep(1);
     bu->setText(clientAddress);
+
 }
 void player::setClientAddress(QString addr){    
     //check with unit testing
