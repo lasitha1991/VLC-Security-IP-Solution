@@ -43,8 +43,8 @@ void MainWindow::on_BtnStream_clicked()
 {
     QLineEdit *le=ui->txtClientAddr;
     QString addr=le->text();    
-    p->setClientAddress(addr);    
-    p->stream(ui->BtnStream);
+    p->setClientAddress(addr);        
+    p->stream("-");
 }
 
 void MainWindow::on_BtnReceive_clicked()
@@ -59,7 +59,7 @@ void MainWindow::on_BtnWebCam_clicked()
 
 void MainWindow::on_BtnSaveWebCam_clicked()
 {
-    p->saveWebcamToFile(ui->BtnSaveWebCam);
+    p->saveWebcamToFile();
 }
 
 void MainWindow::on_BtnLastMinStream_clicked()
@@ -69,5 +69,5 @@ void MainWindow::on_BtnLastMinStream_clicked()
 
 void MainWindow::on_BtnRecoreOneMin_clicked()
 {
-    p->recordOneMin(ui->BtnRecoreOneMin);
+    p->recordOneMin();
 }

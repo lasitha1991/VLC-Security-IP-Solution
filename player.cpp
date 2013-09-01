@@ -6,6 +6,7 @@
 #include "ui_mainwindow.h"
 #include <string.h>
 #include "streamthread.h"
+#include "filesavethread.h"
 
 libvlc_instance_t *inst;
 libvlc_media_player_t *mp;
@@ -99,25 +100,6 @@ void player::loadStream(QWidget *dis,char *streamName){
 }
 
 
-int player::getTime()
-{
-    return libvlc_media_player_get_time(mp);
-}
-
-int player::getLength()
-{
-    return libvlc_media_player_get_length(mp);
-}
-
-
-bool player::isPLay(){
-    if(mp==NULL){
-        return false;
-    }else{
-        return libvlc_media_player_is_playing(mp);
-    }
-}
-
 void player::pause(){
     //    libvlc_media_player_set_pause(mp,pause());
     //  pause();
@@ -127,53 +109,16 @@ void player::pause(){
         exit(EXIT_FAILURE);
     }
 }
-
-int player::getPosition()
-{
-    float pos = libvlc_media_player_get_position(mp);
-    return (int)(pos*1000.0);
-}
-
-void player::changePosition(int pos) { /* Called on position slider change */
-
-    if (mp)
-        libvlc_media_player_set_position(mp, (float)pos/1000.0);
-}
-
-void player::changeVolume(int val)
-{
-    if (mp)
-        libvlc_audio_set_volume (mp,val);
-}
-
-void player::mute(QSlider *sli) {
-    if(mp) {
-        if(sli->value() == 0) { //if already muted...
-
-            this->changeVolume(80);
-            sli->setValue(80);
-
-        } else { //else mute volume
-
-            this->changeVolume(0);
-            sli->setValue(0);
-
-        }
+void player::stream(char* StreamFile){ //must be a unicast stream
+    if(StreamFile[0]=='-'){
+        StreamFile=filePath;
     }
-}
-
-void player::stream(QPushButton *bu){ //must be a unicast stream
     StreamThread st;
-    st.setInst(inst);
-    st.setFileName(filePath);
-    st.setclientAddress(clientAddress);
+    st.setInst(inst,StreamFile,clientAddress);
     st.start();
-    bu->setText("Started");
     //libvlc_vlm_add_broadcast(inst, "Thank_you.flv", filePath, "#transcode{acodec=mp4a,ab=128,channels=2," \
     //                             "samplerate=44100}:rtsp{dst=:8090/go.mp3}", 0, NULL, true, false);
     sleep(1);
-    bu->setText(clientAddress);
-
 }
 void player::setClientAddress(QString addr){    
     //check with unit testing
@@ -224,8 +169,8 @@ void player::loadWebCam(QWidget *dis,QPushButton *bu){
 #endif
     bu->setText("WebCamLoaded");
 }
-void player::saveWebcamToFile(QPushButton *bu){
-    bu->setText("Started");
+void player::saveWebcamToFile(){
+
     char sout[60];
     sout[46]=clipNumber;
     for(int i=0;i<60;i++){
@@ -233,27 +178,20 @@ void player::saveWebcamToFile(QPushButton *bu){
             sout[i]=soutraw[i];
         }
     }    
-
-    libvlc_vlm_add_broadcast(inst, "videosave", "v4l2:///dev/video0", sout, 0, NULL, true, false);
-    libvlc_vlm_play_media(inst, "videosave");
-
-
-    //play(bu);
-    sleep(20); /* Let it play for sometime */
-    //stop();
-    libvlc_vlm_stop_media(inst, "videosave");
-    libvlc_vlm_release(inst);
-    bu->setText("Saved");
+    fileSaveThread ft;
+    ft.setInst(inst,"v4l2:///dev/video0",sout);
+    ft.start();
+    sleep(1);
     if(clipNumber!='4'){
         clipNumber++;
     }else{
         clipNumber='0';
     }
 }
-void player::recordOneMin(QPushButton *bu){
-    saveWebcamToFile(bu);
-    saveWebcamToFile(bu);
-    saveWebcamToFile(bu);
+void player::recordOneMin(){
+    saveWebcamToFile();
+    saveWebcamToFile();
+    saveWebcamToFile();
 }
 
 void player::streamLastMinute(){
@@ -282,27 +220,12 @@ void player::streamLastMinute(){
 }
 
 void player::streamCaptureClip(char clip){ //must be a unicast stream
-
     char file[12];
     file[0]=clip;
     for(int i=1;i<12;i++){
         file[i]=fileName[i-1];
     }
-    libvlc_vlm_add_broadcast(inst, "video stream", file, clientAddress, 0, NULL, true, false);
-    libvlc_vlm_play_media(inst, "video stream");
-
-    //play(bu);
-    sleep(20); /* Let it play for sometime */
-    //stop();
-    libvlc_vlm_stop_media(inst, "video stream");
-    libvlc_vlm_release(inst);
-
-}
-
-
-
-libvlc_media_player_t* player::getMP(){
-    return mp;
+    stream(file);
 }
 
 

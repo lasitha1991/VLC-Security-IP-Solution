@@ -1,6 +1,5 @@
 #include "streamthread.h"
 #include <QtCore>
-#include <QDebug>
 #include <vlc/vlc.h>
 
 libvlc_instance_t *inst2;
@@ -21,12 +20,9 @@ void StreamThread::run(){
     libvlc_vlm_release(inst2);
 }
 
-void StreamThread::setInst(libvlc_instance_t *in){
+void StreamThread::setInst(libvlc_instance_t *in,char *fname,char *cAddr){
     inst2=in;
-}
-void StreamThread::setFileName(char *fpath){
-    filePath2=fpath;
-}
-void StreamThread::setclientAddress(char *cAddr){
+    filePath2=fname;
     clientAddress2=cAddr;
 }
+

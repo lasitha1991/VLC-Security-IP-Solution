@@ -9,10 +9,12 @@ INCLUDEPATH += .
 
 # Input
 HEADERS += mainwindow.h player.h \
-    streamthread.h
+    streamthread.h \
+    filesavethread.h
 FORMS += mainwindow.ui
 SOURCES += main.cpp mainwindow.cpp player.cpp \
-    streamthread.cpp
+    streamthread.cpp \
+    filesavethread.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lvlc
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lvlc

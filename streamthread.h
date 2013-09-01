@@ -2,14 +2,17 @@
 #define STREAMTHREAD_H
 #include <QtCore>
 #include <vlc/vlc.h>
+
+namespace Domain {
+class StreamThread;
+}
+
 class StreamThread :public QThread
 {
 public:
     StreamThread();
     void run();
-    void setInst(libvlc_instance_t *in);
-    void setFileName(char *fname);
-    void setclientAddress(char *cAddr);
+    void setInst(libvlc_instance_t *in,char *fname,char *cAddr);
 };
 
 #endif // STREAMTHREAD_H

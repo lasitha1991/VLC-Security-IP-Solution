@@ -9,7 +9,7 @@
 #include <QLabel>
 #include <vlc/vlc.h>
 
-namespace Ui {
+namespace Domain {
 class player;
 }
 
@@ -25,24 +25,17 @@ public slots:
     void play(QPushButton *bu);
     void pause();
     void stop();
-    int getTime();
-    int getLength();
-    bool isPLay();
     void load(QWidget *dis);
-    int getPosition();
-    void changePosition(int pos);
-    void changeVolume(int val);
-    void mute(QSlider *sli);
-    void stream(QPushButton *bu);
+    void stream(char* file);
     void setClientAddress(QString addr);
     void receiveStream(QWidget *dis,QPushButton *bu);
     void loadStream(QWidget *dis,char *txt);
     void loadWebCam(QWidget *dis,QPushButton *bu);
-    void saveWebcamToFile(QPushButton *bu);
-    void recordOneMin(QPushButton *bu);
+    void saveWebcamToFile();
+    void recordOneMin();
     void streamLastMinute();
     void streamCaptureClip(char clip);
-    libvlc_media_player_t *getMP();
+
 };
 
 #endif // PLAYER_H
