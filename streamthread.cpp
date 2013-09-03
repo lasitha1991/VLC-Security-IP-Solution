@@ -10,6 +10,11 @@ StreamThread::StreamThread()
 }
 
 void StreamThread::run(){
+    exec();
+}
+
+int StreamThread::exec(){
+    QMutexLocker locker(&mutex);
     libvlc_vlm_add_broadcast(inst2, "video stream", filePath2, clientAddress2, 0, NULL, true, false);
     libvlc_vlm_play_media(inst2, "video stream");
 
@@ -18,6 +23,8 @@ void StreamThread::run(){
     //stop();
     libvlc_vlm_stop_media(inst2, "video stream");
     libvlc_vlm_release(inst2);
+    locker.unlock();
+    this->exit();
 }
 
 void StreamThread::setInst(libvlc_instance_t *in,char *fname,char *cAddr){

@@ -41,9 +41,6 @@ void MainWindow::on_Btnplay_clicked()
 
 void MainWindow::on_BtnStream_clicked()
 {
-    QLineEdit *le=ui->txtClientAddr;
-    QString addr=le->text();    
-    p->setClientAddress(addr);        
     p->stream("-");
 }
 
@@ -70,4 +67,11 @@ void MainWindow::on_BtnLastMinStream_clicked()
 void MainWindow::on_BtnRecoreOneMin_clicked()
 {
     p->recordOneMin();
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    QLineEdit *le=ui->txtClientAddr;
+    QString addr=le->text();
+    p->setClientAddress(addr);
 }

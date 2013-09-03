@@ -55,12 +55,12 @@
      <rect>
       <x>150</x>
       <y>0</y>
-      <width>141</width>
+      <width>111</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>udp://10.8.98.2</string>
+     <string>udp://127.0.0.1</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelClientAddr">
@@ -139,6 +139,19 @@
     </property>
     <property name="text">
      <string>Record One Minute</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>0</y>
+      <width>131</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Client Address</string>
     </property>
    </widget>
   </widget>

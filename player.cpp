@@ -2,13 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vlc/vlc.h>
-#include <mainwindow.h>
 #include "ui_mainwindow.h"
-#include <string.h>
+#include <string>
 #include "streamthread.h"
 #include "filesavethread.h"
 
+
 libvlc_instance_t *inst;
+libvlc_instance_t *streamInst;
 libvlc_media_player_t *mp;
 libvlc_media_t *m;
 //char *filePath = "../Thank_you.flv";
@@ -23,6 +24,7 @@ char clipNumber='0';
 player::player(QObject *parent) :    QObject(parent)
 {
     inst = libvlc_new(0, NULL);
+    streamInst=libvlc_new(0,NULL);
 }
 
 void player::play(QPushButton *bu)
@@ -100,37 +102,27 @@ void player::loadStream(QWidget *dis,char *streamName){
 }
 
 
-void player::pause(){
-    //    libvlc_media_player_set_pause(mp,pause());
-    //  pause();
+void player::pause(){    
     if(libvlc_media_player_can_pause(mp)){
         libvlc_media_player_pause(mp);
     }else{
         exit(EXIT_FAILURE);
     }
 }
-void player::stream(char* StreamFile){ //must be a unicast stream
+
+
+void player::stream(char* StreamFile){ //starts a unicast stream thread
     if(StreamFile[0]=='-'){
         StreamFile=filePath;
     }
-    StreamThread st;
-    st.setInst(inst,StreamFile,clientAddress);
-    st.start();
-    //libvlc_vlm_add_broadcast(inst, "Thank_you.flv", filePath, "#transcode{acodec=mp4a,ab=128,channels=2," \
-    //                             "samplerate=44100}:rtsp{dst=:8090/go.mp3}", 0, NULL, true, false);
+    StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+    st->setInst(streamInst,StreamFile,clientAddress); //streams thread sets data for streaming
+    st->start();  //streaming starts
     sleep(1);
 }
 void player::setClientAddress(QString addr){    
     //check with unit testing
-
-    //QByteArray ba=addr.toLocal8Bit();
-    //ba.append(addr);
-    //char client[addr.count()+1];
-    //for(int i=0;i<addr.count();i++){
-    //    client[i]=addr.at(i);
-    //}
-    //client[addr.count()]="\0";
-    //clientAddress=client;
+    clientAddress=(char*)addr.toStdString().c_str();
 }
 
 void player::receiveStream(QWidget *dis,QPushButton *bu){
@@ -178,9 +170,11 @@ void player::saveWebcamToFile(){
             sout[i]=soutraw[i];
         }
     }    
-    fileSaveThread ft;
-    ft.setInst(inst,"v4l2:///dev/video0",sout);
-    ft.start();
+    FilesaveThread *ft=new FilesaveThread();    
+    ft->setInst(inst,"v4l2:///dev/video0",sout);
+    //connect(ft,SIGNAL(finished()),ft,SLOT(deleteLater()));
+    ft->start();
+
     sleep(1);
     if(clipNumber!='4'){
         clipNumber++;
@@ -194,7 +188,7 @@ void player::recordOneMin(){
     saveWebcamToFile();
 }
 
-void player::streamLastMinute(){
+void player::streamLastMinute(){  //if player is at one instance stream last three instances
     if(clipNumber=='0'){
         streamCaptureClip('2');
         streamCaptureClip('3');
@@ -219,7 +213,7 @@ void player::streamLastMinute(){
     }
 }
 
-void player::streamCaptureClip(char clip){ //must be a unicast stream
+void player::streamCaptureClip(char clip){ //starts a unicast stream of a single 20 sec clip
     char file[12];
     file[0]=clip;
     for(int i=1;i<12;i++){

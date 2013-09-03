@@ -7,12 +7,14 @@ namespace Domain {
 class StreamThread;
 }
 
-class StreamThread :public QThread
+class StreamThread : public QThread
 {
 public:
     StreamThread();
     void run();
     void setInst(libvlc_instance_t *in,char *fname,char *cAddr);
+    int exec();
+    mutable QMutex mutex;
 };
 
 #endif // STREAMTHREAD_H
