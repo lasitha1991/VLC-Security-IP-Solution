@@ -8,9 +8,11 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += mainwindow.h player.h streamthread.h filesavethread.h
+HEADERS += mainwindow.h player.h streamthread.h filesavethread.h \
+    broadcastthread.h
 FORMS += mainwindow.ui
-SOURCES += main.cpp mainwindow.cpp player.cpp streamthread.cpp filesavethread.cpp
+SOURCES += main.cpp mainwindow.cpp player.cpp streamthread.cpp filesavethread.cpp \
+    broadcastthread.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lvlc
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lvlc

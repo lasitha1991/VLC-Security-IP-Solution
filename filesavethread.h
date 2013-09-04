@@ -2,19 +2,16 @@
 #define FILESAVETHREAD_H
 #include <QtCore>
 #include <vlc/vlc.h>
-
+#include "broadcastthread.h"
 namespace Domain {
 class FilesaveThread;
 }
 
-class FilesaveThread:public QThread
+class FilesaveThread:public BroadcastThread
 {
 public:
     FilesaveThread();
-    void run();
-    void setInst(libvlc_instance_t *in,char *videoLocation,char *fileLocation);
-    int exec();
-    mutable QMutex mutex2;
+
 };
 
 #endif // FILESAVETHREAD_H
