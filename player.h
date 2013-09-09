@@ -28,7 +28,7 @@ public slots:
     void pause();
     void stop();
     void load(QWidget *dis);
-    void stream(char* file,StreamThread *st);
+    void stream(char sClip,StreamThread *st);
     void setClientAddress(QString addr);
     char* giveClientAddress();
     void receiveStream(QWidget *dis,QPushButton *bu);

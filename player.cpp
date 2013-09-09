@@ -20,10 +20,11 @@ char *serverAddress="udp://127.0.0.1:1234";
 char clipNumber='0';
 
 
+
 player::player(QObject *parent) :    QObject(parent)
 {
     inst = libvlc_new(0, NULL);
-    streamInst=libvlc_new(0,NULL);
+    streamInst=libvlc_new(0,NULL);    
 }
 
 void player::play(QPushButton *bu)
@@ -166,11 +167,9 @@ char* player::giveClientAddress(){
     return (char*)clientAddress.c_str();
 }
 
-void player::stream(char* StreamFile,StreamThread *st){ //starts a unicast stream thread
-    if(StreamFile[0]=='-'){
-        StreamFile=filePath;
-    }    
-    st->setInst(streamInst,StreamFile,this->giveClientAddress()); //streams thread sets data for streaming
+void player::stream(char StreamClip,StreamThread *st){ //starts a unicast stream thread
+    st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming
+    st->setMode(1);
     st->start();  //streaming starts
     sleep(1);
 }
@@ -185,7 +184,7 @@ void player::saveWebcamToFile(){
     }    
     FilesaveThread *ft=new FilesaveThread();    
     ft->setInst(inst,"v4l2:///dev/video0",sout);
-    //connect(ft,SIGNAL(finished()),ft,SLOT(deleteLater()));
+    //connect(ft,SIGNAL(finished()),ft,SLOT(deleteLater()));    
     ft->start();
 
     sleep(1);
@@ -226,14 +225,9 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
     }
 }
 
-void player::streamCaptureClip(char clip){ //starts a unicast stream of a single 20 sec clip
-    char file[12];
-    file[0]=clip;
-    for(int i=1;i<12;i++){
-        file[i]=fileName[i-1];
-    }
+void player::streamCaptureClip(char clip){ //starts a unicast stream of a single 20 sec clip    
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
-    stream(file,st);
+    stream(clip,st);
 }
 
 

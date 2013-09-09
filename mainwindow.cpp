@@ -41,7 +41,7 @@ void MainWindow::on_BtnStream_clicked()
 {
     setClient();
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
-    p->stream("-",st);
+    p->stream('0',st);
 }
 
 void MainWindow::on_BtnReceive_clicked()

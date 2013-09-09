@@ -1,7 +1,7 @@
 #include "broadcastthread.h"
 #include <QtCore>
 #include <vlc/vlc.h>
-
+#include <queue>
 
 
 BroadcastThread::BroadcastThread()
@@ -21,7 +21,8 @@ int BroadcastThread::exec(){
     QMutexLocker locker(mutex);
     //QThread::wait();
 
-    libvlc_vlm_add_broadcast(instb, "video stream", filePathb, clientAddressb, 0,NULL, true, false);
+
+    libvlc_vlm_add_broadcast(instb, "video stream", filePathb.c_str(), clientAddressb.c_str(), 0,NULL, true, false);
     libvlc_vlm_play_media(instb, "video stream");
 
     sleep(20); /* Let it play for sometime */
@@ -31,10 +32,9 @@ int BroadcastThread::exec(){
     locker.unlock();
     this->exit();
 }
-
 void BroadcastThread::setInst(libvlc_instance_t *in,char *fname,char *cAddr){
     instb=in;
     filePathb=fname;
-    clientAddressb=cAddr;
+    clientAddressb=cAddr;    
 }
 
