@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <vlc/vlc.h>
 #include "ui_mainwindow.h"
-#include <string>
 #include "streamthread.h"
 #include "filesavethread.h"
 
@@ -16,7 +15,7 @@ libvlc_media_t *m;
 char *filePath = "../Bolt.avi";
 char soutraw[60]="#transcode{vcodec=mp4v,vb=0,scale=0}:file{dst=_capture.mp4}";
 char *fileName="capture.mp4";
-char *clientAddress="udp://127.0.0.1";
+//char *clientAddress="udp://127.0.0.1";
 char *serverAddress="udp://127.0.0.1:1234";
 char clipNumber='0';
 
@@ -111,19 +110,6 @@ void player::pause(){
 }
 
 
-void player::stream(char* StreamFile){ //starts a unicast stream thread
-    if(StreamFile[0]=='-'){
-        StreamFile=filePath;
-    }
-    StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
-    st->setInst(streamInst,StreamFile,clientAddress); //streams thread sets data for streaming
-    st->start();  //streaming starts
-    sleep(1);
-}
-void player::setClientAddress(QString addr){    
-    //check with unit testing
-    clientAddress=(char*)addr.toStdString().c_str();
-}
 
 void player::receiveStream(QWidget *dis,QPushButton *bu){
     //code to recieve the stream
@@ -161,8 +147,35 @@ void player::loadWebCam(QWidget *dis,QPushButton *bu){
 #endif
     bu->setText("WebCamLoaded");
 }
-void player::saveWebcamToFile(){
 
+
+void player::setClientAddress(QString addr){
+    addr=addr.toLower();
+    if((addr.mid(0,3).compare("udp"))){
+        addr="udp://"+addr;
+    }
+    QString ipPart=addr.mid(6,addr.length());
+    QRegExp rx("*.*.*.*");
+    rx.setPatternSyntax(QRegExp::Wildcard);
+    if(!(rx.exactMatch(ipPart))){
+        addr="udp://127.0.0.1";
+    }
+    clientAddress=addr.toStdString();
+}
+char* player::giveClientAddress(){    
+    return (char*)clientAddress.c_str();
+}
+
+void player::stream(char* StreamFile,StreamThread *st){ //starts a unicast stream thread
+    if(StreamFile[0]=='-'){
+        StreamFile=filePath;
+    }    
+    st->setInst(streamInst,StreamFile,this->giveClientAddress()); //streams thread sets data for streaming
+    st->start();  //streaming starts
+    sleep(1);
+}
+
+void player::saveWebcamToFile(){    
     char sout[60];
     sout[46]=clipNumber;
     for(int i=0;i<60;i++){
@@ -188,7 +201,7 @@ void player::recordOneMin(){
     saveWebcamToFile();
 }
 
-void player::streamLastMinute(){  //if player is at one instance stream last three instances
+void player::streamLastMinute(){  //if player is at one instance stream last three instances    
     if(clipNumber=='0'){
         streamCaptureClip('2');
         streamCaptureClip('3');
@@ -219,7 +232,8 @@ void player::streamCaptureClip(char clip){ //starts a unicast stream of a single
     for(int i=1;i<12;i++){
         file[i]=fileName[i-1];
     }
-    stream(file);
+    StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+    stream(file,st);
 }
 
 

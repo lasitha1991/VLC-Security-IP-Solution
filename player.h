@@ -8,6 +8,8 @@
 #include <QSlider>
 #include <QLabel>
 #include <vlc/vlc.h>
+#include "streamthread.h"
+#include "filesavethread.h"
 
 namespace Domain {
 class player;
@@ -26,8 +28,9 @@ public slots:
     void pause();
     void stop();
     void load(QWidget *dis);
-    void stream(char* file);
+    void stream(char* file,StreamThread *st);
     void setClientAddress(QString addr);
+    char* giveClientAddress();
     void receiveStream(QWidget *dis,QPushButton *bu);
     void loadStream(QWidget *dis,char *txt);
     void loadWebCam(QWidget *dis,QPushButton *bu);
@@ -36,6 +39,8 @@ public slots:
     void streamLastMinute();
     void streamCaptureClip(char clip);
 
+private:
+    std::string clientAddress;
 };
 
 #endif // PLAYER_H

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -14,6 +15,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
     
 private slots:
     void on_Btnplay_clicked();
@@ -30,7 +32,7 @@ private slots:
 
     void on_BtnRecoreOneMin_clicked();
 
-    void on_pushButton_clicked();
+    void setClient();
 
 private:
     Ui::MainWindow *ui;

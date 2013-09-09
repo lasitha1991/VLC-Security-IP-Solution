@@ -7,16 +7,16 @@
 
 
 bool isplay=true;
-player *p=new player();
+player *p;
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    QObject::connect(ui->Btnplay,SIGNAL(clicked()),this,SLOT(on_Btnplay_clicked()));
+    p=new player();
 
+    ui->setupUi(this);
 
     ui->display->setAutoFillBackground( true );
     QPalette plt = palette();
@@ -24,14 +24,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->display->setPalette( plt );
 
     p->load(ui->display);
-
-    ui->Btnplay->setText("play");
-
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete p;
 }
 
 void MainWindow::on_Btnplay_clicked()
@@ -41,7 +39,9 @@ void MainWindow::on_Btnplay_clicked()
 
 void MainWindow::on_BtnStream_clicked()
 {
-    p->stream("-");
+    setClient();
+    StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+    p->stream("-",st);
 }
 
 void MainWindow::on_BtnReceive_clicked()
@@ -56,11 +56,12 @@ void MainWindow::on_BtnWebCam_clicked()
 
 void MainWindow::on_BtnSaveWebCam_clicked()
 {
-    p->saveWebcamToFile();
+    p->saveWebcamToFile();    
 }
 
 void MainWindow::on_BtnLastMinStream_clicked()
 {
+    setClient();
     p->streamLastMinute();
 }
 
@@ -69,7 +70,7 @@ void MainWindow::on_BtnRecoreOneMin_clicked()
     p->recordOneMin();
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::setClient()
 {
     QLineEdit *le=ui->txtClientAddr;
     QString addr=le->text();
