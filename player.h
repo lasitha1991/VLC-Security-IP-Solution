@@ -24,7 +24,7 @@ public:
 signals:
 
 public slots:
-    void play(QPushButton *bu);
+    void play();
     void pause();
     void stop();
     void load(QWidget *dis);
@@ -35,12 +35,15 @@ public slots:
     void loadStream(QWidget *dis,char *txt);
     void loadWebCam(QWidget *dis,QPushButton *bu);
     void saveWebcamToFile();
-    void recordOneMin();
     void streamLastMinute();
-    void streamCaptureClip(char clip);
-
+    void streamCaptureClip(char clip,StreamThread *st);
+    void increaseClipNumber();
+    void setStreaming(bool val);
+    void setRecording(bool val);
 private:
     std::string clientAddress;
+    bool boolrecord;
+    bool boolstream;
 };
 
 #endif // PLAYER_H

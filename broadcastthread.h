@@ -24,6 +24,7 @@ public:
     std::string filePathb;
     std::string clientAddressb;
 
+
 };
 
 #endif // BROADCASTTHREAD_H

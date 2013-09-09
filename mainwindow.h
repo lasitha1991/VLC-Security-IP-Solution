@@ -15,7 +15,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
     
 private slots:
     void on_Btnplay_clicked();
@@ -26,16 +25,16 @@ private slots:
 
     void on_BtnWebCam_clicked();
 
-    void on_BtnSaveWebCam_clicked();
-
-    void on_BtnLastMinStream_clicked();
-
-    void on_BtnRecoreOneMin_clicked();
+    void on_BtnFromLastMinStream_clicked();
 
     void setClient();
 
+    void on_BtnStartCtsRecord_clicked();
+
 private:
     Ui::MainWindow *ui;
+    bool recording;
+    bool streaming;
 };
 
 #endif // MAINWINDOW_H

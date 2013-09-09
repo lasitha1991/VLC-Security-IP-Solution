@@ -27,7 +27,7 @@ player::player(QObject *parent) :    QObject(parent)
     streamInst=libvlc_new(0,NULL);    
 }
 
-void player::play(QPushButton *bu)
+void player::play()
 {
     if (!mp)
         return;
@@ -36,13 +36,11 @@ void player::play(QPushButton *bu)
     {
         /* Pause */
         libvlc_media_player_pause(mp);
-        bu->setText("Play");
     }
     else
     {
         /* Play again */
         libvlc_media_player_play(mp);
-        bu->setText("Pause");
     }
 }
 
@@ -80,6 +78,8 @@ void player::load(QWidget *dis){
     libvlc_media_player_set_hwnd(mp, dis->winId());
 #endif
 }
+
+
 void player::loadStream(QWidget *dis,char *streamName){
     // create a new item
     m = libvlc_media_new_location(inst, streamName);
@@ -169,7 +169,6 @@ char* player::giveClientAddress(){
 
 void player::stream(char StreamClip,StreamThread *st){ //starts a unicast stream thread
     st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming
-    st->setMode(1);
     st->start();  //streaming starts
     sleep(1);
 }
@@ -182,52 +181,70 @@ void player::saveWebcamToFile(){
             sout[i]=soutraw[i];
         }
     }    
-    FilesaveThread *ft=new FilesaveThread();    
+    FilesaveThread *ft=new FilesaveThread();
+    connect(ft,SIGNAL(finished()),this,SLOT(increaseClipNumber()));
+    connect(ft,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));
     ft->setInst(inst,"v4l2:///dev/video0",sout);
-    //connect(ft,SIGNAL(finished()),ft,SLOT(deleteLater()));    
+
     ft->start();
 
     sleep(1);
+    //ft->wait();
+    if(!boolrecord){
+        disconnect(ft,SIGNAL(finished()),this,SLOT(increaseClipNumber()));
+        disconnect(ft,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));
+        ft->terminate();
+    }
+
+}
+void player::increaseClipNumber(){
     if(clipNumber!='4'){
         clipNumber++;
     }else{
         clipNumber='0';
     }
 }
-void player::recordOneMin(){
-    saveWebcamToFile();
-    saveWebcamToFile();
-    saveWebcamToFile();
-}
 
 void player::streamLastMinute(){  //if player is at one instance stream last three instances    
+    StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+    st->setMode(1);
     if(clipNumber=='0'){
-        streamCaptureClip('2');
-        streamCaptureClip('3');
-        streamCaptureClip('4');
+        streamCaptureClip('2',st);
+        //streamCaptureClip('3');
+        //streamCaptureClip('4');
     }
     else if(clipNumber=='1'){
-        streamCaptureClip('3');
-        streamCaptureClip('4');
-        streamCaptureClip('0');
+        streamCaptureClip('3',st);
+        //streamCaptureClip('4');
+        //streamCaptureClip('0');
     }else if(clipNumber=='2'){
-        streamCaptureClip('4');
-        streamCaptureClip('0');
-        streamCaptureClip('1');
+        streamCaptureClip('4',st);
+        //streamCaptureClip('0');
+        //streamCaptureClip('1');
     }else if(clipNumber=='3'){
-        streamCaptureClip('0');
-        streamCaptureClip('1');
-        streamCaptureClip('2');
+        streamCaptureClip('0',st);
+        //streamCaptureClip('1');
+        //streamCaptureClip('2');
     }else if(clipNumber=='4'){
-        streamCaptureClip('1');
-        streamCaptureClip('2');
-        streamCaptureClip('3');
+        streamCaptureClip('1',st);
+        //streamCaptureClip('2');
+        //streamCaptureClip('3');
+    }
+    QThread::connect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
+    if(!boolstream){
+        QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
+        st->terminate();
     }
 }
 
-void player::streamCaptureClip(char clip){ //starts a unicast stream of a single 20 sec clip    
-    StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+void player::streamCaptureClip(char clip,StreamThread *st){ //starts a unicast stream of a single 20 sec clip
     stream(clip,st);
 }
 
+void player::setRecording(bool val){
+    boolrecord=val;
+}
+void player::setStreaming(bool val){
+    boolstream=val;
+}
 

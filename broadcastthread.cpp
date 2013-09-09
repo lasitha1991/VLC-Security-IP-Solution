@@ -12,14 +12,15 @@ BroadcastThread::~BroadcastThread(){
 
 }
 
-void BroadcastThread::run(){
+void BroadcastThread::run(){    
     exec();
+
 }
 
 int BroadcastThread::exec(){
-    mutex=new QMutex();    
+
+    mutex=new QMutex();
     QMutexLocker locker(mutex);
-    //QThread::wait();
 
 
     libvlc_vlm_add_broadcast(instb, "video stream", filePathb.c_str(), clientAddressb.c_str(), 0,NULL, true, false);
@@ -30,7 +31,10 @@ int BroadcastThread::exec(){
     libvlc_vlm_stop_media(instb, "video stream");
     libvlc_vlm_release(instb);
     locker.unlock();
+
     this->exit();
+
+
 }
 void BroadcastThread::setInst(libvlc_instance_t *in,char *fname,char *cAddr){
     instb=in;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>421</width>
-    <height>300</height>
+    <height>331</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
    <widget class="QPushButton" name="Btnplay">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>170</y>
       <width>98</width>
       <height>27</height>
@@ -102,43 +102,30 @@
      <string>WebCam</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="BtnSaveWebCam">
+   <widget class="QPushButton" name="BtnFromLastMinStream">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>200</y>
-      <width>98</width>
+      <x>10</x>
+      <y>230</y>
+      <width>401</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>SaveWebcam</string>
+     <string>Start Streaming From Last Minute</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="BtnLastMinStream">
+   <widget class="QPushButton" name="BtnStartCtsRecord">
     <property name="geometry">
      <rect>
-      <x>177</x>
+      <x>10</x>
       <y>200</y>
-      <width>131</width>
+      <width>401</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>StreamLastMinute</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="BtnRecoreOneMin">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>200</y>
-      <width>171</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Record One Minute</string>
+     <string>Start Continuous Recording</string>
     </property>
    </widget>
   </widget>

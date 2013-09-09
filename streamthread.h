@@ -15,8 +15,9 @@ public:
     void setClip(char clip);
     void setMode(int mode);
     int exec();
+    void run();
     char clip;
-    int mode;
+    int Smode;
 
 };
 

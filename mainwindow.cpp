@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->display->setPalette( plt );
 
     p->load(ui->display);
+    recording=false;
+    streaming=false;
 }
 
 MainWindow::~MainWindow()
@@ -34,13 +36,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Btnplay_clicked()
 {
-    p->play(ui->Btnplay);
+
+    p->play();
+    ui->Btnplay->setText("Pause");
 }
 
 void MainWindow::on_BtnStream_clicked()
 {
     setClient();
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+    st->setMode(0);
     p->stream('0',st);
 }
 
@@ -54,25 +59,46 @@ void MainWindow::on_BtnWebCam_clicked()
     p->loadWebCam(ui->display,ui->BtnWebCam);
 }
 
-void MainWindow::on_BtnSaveWebCam_clicked()
+
+void MainWindow::on_BtnFromLastMinStream_clicked()
 {
-    p->saveWebcamToFile();    
+    if(!streaming){
+        setClient();
+        p->setStreaming(true);
+        p->streamLastMinute();
+        streaming=true;
+        ui->BtnFromLastMinStream->setText("Stop Streaming");
+    }else{
+        //code to stop streaming
+        p->setStreaming(false);
+        streaming=false;
+        ui->BtnFromLastMinStream->setText("Start Streaming From Last Minute");
+    }
 }
 
-void MainWindow::on_BtnLastMinStream_clicked()
-{
-    setClient();
-    p->streamLastMinute();
-}
 
-void MainWindow::on_BtnRecoreOneMin_clicked()
-{
-    p->recordOneMin();
-}
 
 void MainWindow::setClient()
 {
     QLineEdit *le=ui->txtClientAddr;
     QString addr=le->text();
     p->setClientAddress(addr);
+}
+
+
+
+void MainWindow::on_BtnStartCtsRecord_clicked()
+{
+    if(!recording){
+        p->setRecording(true);
+        p->saveWebcamToFile();
+        recording=true;
+        ui->BtnStartCtsRecord->setText("Stop Continuous Recording");
+    }else{
+        qDebug("Already recording");
+        //code to stop recording
+        p->setRecording(false);
+        recording=false;
+        ui->BtnStartCtsRecord->setText("Start Continuous Recording");
+    }
 }
