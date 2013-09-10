@@ -6,7 +6,7 @@
 
 BroadcastThread::BroadcastThread()
 {
-
+    clipLength=20;
 }
 BroadcastThread::~BroadcastThread(){
 
@@ -26,7 +26,7 @@ int BroadcastThread::exec(){
     libvlc_vlm_add_broadcast(instb, "video stream", filePathb.c_str(), clientAddressb.c_str(), 0,NULL, true, false);
     libvlc_vlm_play_media(instb, "video stream");
 
-    sleep(20); /* Let it play for sometime */
+    sleep(clipLength); /* Let it play for sometime */
 
     libvlc_vlm_stop_media(instb, "video stream");
     libvlc_vlm_release(instb);
@@ -41,4 +41,12 @@ void BroadcastThread::setInst(libvlc_instance_t *in,char *fname,char *cAddr){
     filePathb=fname;
     clientAddressb=cAddr;    
 }
-
+void BroadcastThread::setVLCInst(libvlc_instance_t *ins){
+    instb=ins;
+}
+void BroadcastThread::setFilePath(char *sAddr){
+    filePathb=sAddr;
+}
+void BroadcastThread::setClientAddr(char *cAddr){
+    clientAddressb=cAddr;
+}

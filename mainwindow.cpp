@@ -22,8 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QPalette plt = palette();
     plt.setColor( QPalette::Window, Qt::black );
     ui->display->setPalette( plt );
-
-    p->load(ui->display);
+    p->setDisplayWidget(ui->display);
+    p->load("0capture.mp4");
     recording=false;
     streaming=false;
 }
@@ -36,27 +36,26 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Btnplay_clicked()
 {
-
-    p->play();
-    ui->Btnplay->setText("Pause");
+    p->play();    
 }
 
 void MainWindow::on_BtnStream_clicked()
 {
     setClient();
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
-    st->setMode(0);
     p->stream('0',st);
 }
 
 void MainWindow::on_BtnReceive_clicked()
 {
-    p->receiveStream(ui->display,ui->BtnReceive);
+    p->receiveStream(ui->BtnReceive);
 }
 
 void MainWindow::on_BtnWebCam_clicked()
 {
-    p->loadWebCam(ui->display,ui->BtnWebCam);
+    p->loadWebCam();
+    ui->Btnplay->setText("Play Webcam");
+    ui->BtnWebCam->setText("WebcamLoaded");
 }
 
 
@@ -95,10 +94,15 @@ void MainWindow::on_BtnStartCtsRecord_clicked()
         recording=true;
         ui->BtnStartCtsRecord->setText("Stop Continuous Recording");
     }else{
-        qDebug("Already recording");
+        //qDebug("Already recording");
         //code to stop recording
         p->setRecording(false);
         recording=false;
         ui->BtnStartCtsRecord->setText("Start Continuous Recording");
     }
+}
+
+void MainWindow::on_BtnLiveStream_clicked()
+{
+    p->streamLive();
 }

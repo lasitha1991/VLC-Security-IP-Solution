@@ -31,6 +31,8 @@ private slots:
 
     void on_BtnStartCtsRecord_clicked();
 
+    void on_BtnLiveStream_clicked();
+
 private:
     Ui::MainWindow *ui;
     bool recording;

@@ -25,25 +25,34 @@ signals:
 
 public slots:
     void play();
+    void playStream();
     void pause();
     void stop();
-    void load(QWidget *dis);
+    void load(char* fileName);
     void stream(char sClip,StreamThread *st);
     void setClientAddress(QString addr);
     char* giveClientAddress();
-    void receiveStream(QWidget *dis,QPushButton *bu);
-    void loadStream(QWidget *dis,char *txt);
-    void loadWebCam(QWidget *dis,QPushButton *bu);
+    void receiveStream(QPushButton *bu);
+    void loadStream(char *txt);
+    void loadWebCam();
     void saveWebcamToFile();
     void streamLastMinute();
-    void streamCaptureClip(char clip,StreamThread *st);
+    void streamLive();
     void increaseClipNumber();
     void setStreaming(bool val);
     void setRecording(bool val);
+    char giveClipNumber();
+    void setDisplayWidget(QWidget *dis);
 private:
     std::string clientAddress;
     bool boolrecord;
     bool boolstream;
+    char clipNumber;
+    libvlc_instance_t *inst;
+    libvlc_instance_t *streamInst;
+    libvlc_media_player_t *mp;
+    libvlc_media_t *m;
+    QWidget *displayWid;
 };
 
 #endif // PLAYER_H

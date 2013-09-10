@@ -16,14 +16,15 @@ public:
     void run();
     void setInst(libvlc_instance_t *in,char *sourceAddr,char *destAddr);
     int exec();
-
+    void setVLCInst(libvlc_instance_t *ins);
+    void setFilePath(char* sAddr);
+    void setClientAddr(char* cAddr);
+private:
     mutable QMutex *mutex;
     libvlc_instance_t *instb;
-
-public:
     std::string filePathb;
     std::string clientAddressb;
-
+    int clipLength;
 
 };
 
