@@ -14,7 +14,7 @@ char *serverAddress="udp://127.0.0.1:1234";
 player::player(QObject *parent) :    QObject(parent)
 {
     inst = libvlc_new(0, NULL);
-    streamInst=libvlc_new(0,NULL);    
+    streamInst=libvlc_new(0,NULL);
     clipNumber='0';
     boolstream=false;
     boolrecord=false;
@@ -27,8 +27,9 @@ void player::play()
 
     if (libvlc_media_player_is_playing(mp))
     {
-        /* Pause */
-        libvlc_media_player_pause(mp);
+        /* Stop */
+        //libvlc_media_player_pause(mp);
+        stop();
     }
     else
     {
@@ -130,7 +131,7 @@ void player::setClientAddress(QString addr){
     QString ipPart=addr.mid(6,addr.length());
     QRegExp rx("*.*.*.*");
     rx.setPatternSyntax(QRegExp::Wildcard);
-    if(!(rx.exactMatch(ipPart))){
+    if(!(rx.exactMatch(ipPart))){  // if the format is incorrect in given string it is set to a default value
         addr="udp://127.0.0.1";
     }
     clientAddress=addr.toStdString();
@@ -140,8 +141,8 @@ char* player::giveClientAddress(){
 }
 
 void player::stream(char StreamClip,StreamThread *st){ //starts a unicast stream thread
-    st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming   
-    connect(st,SIGNAL(finished()),this,SLOT(releaseDisplay()));
+    st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming
+    connect(st,SIGNAL(finished()),this,SLOT(releaseDisplay()));  //after finishing stream release the display to start a new media
     st->start();  //streaming starts
 
 }
@@ -169,7 +170,7 @@ void player::streamLive(){
     releaseDisplay();
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
     connect(st,SIGNAL(finished()),this,SLOT(streamLive()));
-    stream('9',st);
+    stream('9',st);         //9 to represent live stream
     if(!(this->isStreaming())){
         disconnect(st,SIGNAL(finished()),this,SLOT(streamLive()));
         st->terminate();
@@ -189,7 +190,7 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
     char StreamClip;
     if(clipNumber=='0'){
-         //stream the clip which is 1 minute before
+        //stream the clip which is 1 minute before
         StreamClip='2';
     }
     else if(clipNumber=='1'){
@@ -200,10 +201,10 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
         StreamClip='0';
     }else if(clipNumber=='4'){
         StreamClip='1';
-    }   
+    }
     stream(StreamClip,st);
     playStream(StreamClip);
-    QThread::connect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));    
+    QThread::connect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
     if(!boolstream){
         QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
         st->terminate();

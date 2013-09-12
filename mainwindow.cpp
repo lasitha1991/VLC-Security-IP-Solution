@@ -34,7 +34,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_Btnplay_clicked()
 {
-    p->play();    
+    p->play();
 }
 
 void MainWindow::on_BtnStream_clicked()
@@ -97,7 +97,6 @@ void MainWindow::on_BtnStartCtsRecord_clicked()
         p->saveWebcamToFile();
         ui->BtnStartCtsRecord->setText("Stop Continuous Recording");
     }else{
-        //qDebug("Already recording");
         //code to stop recording
         p->setRecording(false);
         ui->BtnStartCtsRecord->setText("Start Continuous Recording");
