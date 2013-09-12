@@ -46,14 +46,22 @@ void MainWindow::on_BtnStream_clicked()
 
 void MainWindow::on_BtnReceive_clicked()
 {
-    p->receiveStream(ui->BtnReceive);
+    p->receiveStream();
 }
 
 void MainWindow::on_BtnWebCam_clicked()
 {
-    p->loadWebCam();
-    ui->BtnWebCam->setText("WebcamLoaded");
-    p->play();
+    if(!p->isWebcamOn()){
+        p->setWebcam(true);
+        p->loadWebCam();
+        ui->BtnWebCam->setText("WebcamLoaded");
+        p->play();
+    }else{
+        p->setWebcam(false);
+        p->stop();
+        p->releaseDisplay();
+        ui->BtnWebCam->setText("Webcam");
+    }
 }
 
 

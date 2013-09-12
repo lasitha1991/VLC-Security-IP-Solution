@@ -32,8 +32,7 @@ public slots:
     void stream(char sClip,StreamThread *st);
     void setClientAddress(QString addr);
     char* giveClientAddress();
-    void receiveStream(QPushButton *bu);
-    void loadStream(char *txt);
+    void receiveStream();
     void loadWebCam();
     void saveWebcamToFile();
     void streamLastMinute();
@@ -41,8 +40,10 @@ public slots:
     void increaseClipNumber();
     void setStreaming(bool val);
     void setRecording(bool val);
+    void setWebcam(bool val);
     bool isRecording();
     bool isStreaming();
+    bool isWebcamOn();
     char giveClipNumber();
     void setDisplayWidget(QWidget *dis);
     void releaseDisplay();
@@ -50,6 +51,7 @@ private:
     std::string clientAddress;
     bool boolrecord;
     bool boolstream;
+    bool boolwebcamon;
     char clipNumber;
     libvlc_instance_t *inst;
     libvlc_instance_t *streamInst;
