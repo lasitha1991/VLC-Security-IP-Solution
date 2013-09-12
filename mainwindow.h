@@ -35,8 +35,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    bool recording;
-    bool streaming;
 };
 
 #endif // MAINWINDOW_H

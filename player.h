@@ -25,7 +25,7 @@ signals:
 
 public slots:
     void play();
-    void playStream();
+    void playStream(char StreamClip);
     void pause();
     void stop();
     void load(char* fileName);
@@ -41,8 +41,11 @@ public slots:
     void increaseClipNumber();
     void setStreaming(bool val);
     void setRecording(bool val);
+    bool isRecording();
+    bool isStreaming();
     char giveClipNumber();
     void setDisplayWidget(QWidget *dis);
+    void releaseDisplay();
 private:
     std::string clientAddress;
     bool boolrecord;

@@ -16,6 +16,8 @@ player::player(QObject *parent) :    QObject(parent)
     inst = libvlc_new(0, NULL);
     streamInst=libvlc_new(0,NULL);    
     clipNumber='0';
+    boolstream=false;
+    boolrecord=false;
 }
 
 void player::play()
@@ -34,7 +36,10 @@ void player::play()
         libvlc_media_player_play(mp);
     }
 }
-void player::playStream(){
+void player::playStream(char StreamClip){
+    std::string ccname="_capture.mp4";
+    ccname[0]=StreamClip;
+    load((char*)ccname.c_str());
     play();
 }
 
@@ -62,10 +67,7 @@ void player::load(char* fileName){
         exit(EXIT_FAILURE);
     }
     // create a media play playing environment
-    if(mp){
-        //libvlc_media_player_release(mp);
-        qDebug("media player releasing code");
-    }
+
     mp = libvlc_media_player_new_from_media(m);
 
     // no need to keep the media now
@@ -171,12 +173,9 @@ char* player::giveClientAddress(){
 
 void player::stream(char StreamClip,StreamThread *st){ //starts a unicast stream thread
     st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming   
+    connect(st,SIGNAL(finished()),this,SLOT(releaseDisplay()));
     st->start();  //streaming starts
 
-    std::string ccname="0capture.mp4";
-    ccname[0]=StreamClip;
-    load((char*)ccname.c_str());
-    playStream();
 }
 
 void player::saveWebcamToFile(){    
@@ -199,8 +198,14 @@ void player::saveWebcamToFile(){
 
 }
 void player::streamLive(){
+    releaseDisplay();
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+    connect(st,SIGNAL(finished()),this,SLOT(streamLive()));
     stream('9',st);
+    if(!(this->isStreaming())){
+        disconnect(st,SIGNAL(finished()),this,SLOT(streamLive()));
+        st->terminate();
+    }
 }
 
 void player::increaseClipNumber(){
@@ -211,20 +216,25 @@ void player::increaseClipNumber(){
     }
 }
 
-void player::streamLastMinute(){  //if player is at one instance stream last three instances    
+void player::streamLastMinute(){  //if player is at one instance stream last three instances
+    releaseDisplay();
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+    char StreamClip;
     if(clipNumber=='0'){
-        stream('2',st);         //stream the clip which is 1 minute before
+         //stream the clip which is 1 minute before
+        StreamClip='2';
     }
     else if(clipNumber=='1'){
-        stream('3',st);
+        StreamClip='3';
     }else if(clipNumber=='2'){
-        stream('4',st);
+        StreamClip='4';
     }else if(clipNumber=='3'){
-        stream('0',st);
+        StreamClip='0';
     }else if(clipNumber=='4'){
-        stream('1',st);
+        StreamClip='1';
     }   
+    stream(StreamClip,st);
+    playStream(StreamClip);
     QThread::connect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));    
     if(!boolstream){
         QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
@@ -239,6 +249,20 @@ void player::setRecording(bool val){
 void player::setStreaming(bool val){
     boolstream=val;
 }
+bool player::isRecording(){
+    return boolrecord;
+}
+bool player::isStreaming(){
+    return boolstream;
+}
+
 char player::giveClipNumber(){
     return clipNumber;
+}
+
+void player::releaseDisplay(){
+    if(mp){
+        libvlc_media_player_release(mp);
+        //qDebug("media player releasing code");
+    }
 }

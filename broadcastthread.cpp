@@ -26,6 +26,7 @@ int BroadcastThread::exec(){
     libvlc_vlm_add_broadcast(instb, "video stream", filePathb.c_str(), clientAddressb.c_str(), 0,NULL, true, false);
     libvlc_vlm_play_media(instb, "video stream");
 
+
     sleep(clipLength); /* Let it play for sometime */
 
     libvlc_vlm_stop_media(instb, "video stream");

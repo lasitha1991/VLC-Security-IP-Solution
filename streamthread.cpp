@@ -18,6 +18,8 @@ void StreamThread::setClip(char clip){
         setFilePath(file);
     }else{
         setFilePath("v4l2:///dev/video0");
+        //setClientAddr("#transcode{vcodec=mp4v,vb=0,scale=0}:std{access=udp{ttl=1},dst=127.0.0.1:1234}");
+        setClientAddr("#transcode{vcodec=mp4v,vb=0,scale=0}:udp{dst=127.0.0.1}");
     }
 }
 

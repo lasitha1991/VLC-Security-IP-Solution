@@ -24,8 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->display->setPalette( plt );
     p->setDisplayWidget(ui->display);
     p->load("0capture.mp4");
-    recording=false;
-    streaming=false;
 }
 
 MainWindow::~MainWindow()
@@ -54,23 +52,21 @@ void MainWindow::on_BtnReceive_clicked()
 void MainWindow::on_BtnWebCam_clicked()
 {
     p->loadWebCam();
-    ui->Btnplay->setText("Play Webcam");
     ui->BtnWebCam->setText("WebcamLoaded");
+    p->play();
 }
 
 
 void MainWindow::on_BtnFromLastMinStream_clicked()
 {
-    if(!streaming){
+    if(!p->isStreaming()){
         setClient();
         p->setStreaming(true);
         p->streamLastMinute();
-        streaming=true;
         ui->BtnFromLastMinStream->setText("Stop Streaming");
     }else{
         //code to stop streaming
         p->setStreaming(false);
-        streaming=false;
         ui->BtnFromLastMinStream->setText("Start Streaming From Last Minute");
     }
 }
@@ -88,21 +84,26 @@ void MainWindow::setClient()
 
 void MainWindow::on_BtnStartCtsRecord_clicked()
 {
-    if(!recording){
+    if(!p->isRecording()){
         p->setRecording(true);
         p->saveWebcamToFile();
-        recording=true;
         ui->BtnStartCtsRecord->setText("Stop Continuous Recording");
     }else{
         //qDebug("Already recording");
         //code to stop recording
         p->setRecording(false);
-        recording=false;
         ui->BtnStartCtsRecord->setText("Start Continuous Recording");
     }
 }
 
 void MainWindow::on_BtnLiveStream_clicked()
 {
-    p->streamLive();
+    if(!(p->isStreaming())){
+        p->setStreaming(true);
+        p->streamLive();
+        ui->BtnLiveStream->setText("Stop Live Stream");
+    }else{
+        p->setStreaming(false);
+        ui->BtnLiveStream->setText("Live Stream");
+    }
 }
