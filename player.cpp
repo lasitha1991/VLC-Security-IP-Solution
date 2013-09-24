@@ -80,7 +80,7 @@ void player::load(char* fileName){
 #elif defined(Q_OS_UNIX)
     libvlc_media_player_set_xwindow(mp,displayWid->winId());
 #elif defined(Q_OS_WIN)
-    libvlc_media_player_set_hwnd(mp, displayWid->winId());
+    libvlc_media_player_set_hwnd(mp, (HWND)displayWid->winId());
 #endif
 }
 
