@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #ifndef FILESAVETHREAD_H
 #define FILESAVETHREAD_H
 #include <QtCore>

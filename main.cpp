@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #include <QtGui/QApplication>
 #include "mainwindow.h"
 

@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -32,6 +35,8 @@ private slots:
     void on_BtnStartCtsRecord_clicked();
 
     void on_BtnLiveStream_clicked();
+
+    void on_BtnProcessVid_clicked();
 
 private:
     Ui::MainWindow *ui;

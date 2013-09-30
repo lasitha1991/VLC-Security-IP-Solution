@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #include "broadcastthread.h"
 #include <QtCore>
 #include <vlc/vlc.h>

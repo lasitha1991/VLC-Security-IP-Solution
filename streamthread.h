@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #ifndef STREAMTHREAD_H
 #define STREAMTHREAD_H
 #include <QtCore>

@@ -1,3 +1,7 @@
+//Lasitha Weerasinghe
+//100577A
+
+
 #include "motiondetector.h"
 #include "opencv2/opencv.hpp"
 #include <iostream>
@@ -7,12 +11,13 @@
 
 MotionDetector::MotionDetector()
 {
-    filePath="_capture.mp4";
+    clipNo='4';
+    filePath="4capture.mp4";
     senseLevel=500;
 }
 
 
-void MotionDetector::run(){
+void MotionDetector::run(){    
     exec();
 }
 
@@ -31,26 +36,30 @@ int MotionDetector::exec(){
     for(;;)
     {
         try{
+            //qDebug("loop");
             cap >> frame;
             bg.operator ()(frame,fore);
             bg.getBackgroundImage(back);
             cv::erode(fore,fore,cv::Mat());
             cv::dilate(fore,fore,cv::Mat());
             cv::findContours(fore,contours,CV_RETR_EXTERNAL,CV_CHAIN_APPROX_NONE);
-            //cv::drawContours(frame,contours,-1,cv::Scalar(0,0,255),2);
+            cv::drawContours(frame,contours,-1,cv::Scalar(0,0,255),2);
 
-            //cv::imshow("Frame",frame);
+            cv::imshow("Frame",frame);
             //cv::imshow("Background",back);
             //cv::imshow("ForeGround",fore);
-            if(cv::waitKey(30) >= 0) break;
-            if(contours.size()>senseLevel){
-                printf("motion detected:: %d\n",contours.size());
+//            if(cv::waitKey(3) >= 0){
+//                break;
+//            }
+            //qDebug("draw");
+            if(contours.size()>senseLevel){                
                 emit motionDetected();
             }
-        }catch(cv::Exception e){
+        }catch(cv::Exception e){            
             cap.release();
             increaseClip();
-            cap(filePath);
+            cap.open(filePath);
+            qDebug(filePath.c_str());
         }
     }
 }
@@ -66,4 +75,7 @@ void MotionDetector::increaseClip(){
         clipNo='0';
     }
     filePath[0]=clipNo;
+}
+void MotionDetector::setSenseLevel(int lev){
+    senseLevel=100+lev*10;
 }

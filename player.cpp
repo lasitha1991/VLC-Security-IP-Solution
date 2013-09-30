@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #include "player.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +22,7 @@ player::player(QObject *parent) :    QObject(parent)
     boolstream=false;
     boolrecord=false;
     mdetect=new MotionDetector();
+
 }
 
 void player::play()
@@ -148,7 +152,8 @@ void player::stream(char StreamClip,StreamThread *st){ //starts a unicast stream
 
 }
 
-void player::saveWebcamToFile(){    
+void player::saveWebcamToFile(){
+
     std::string sout;
     sout=soutraw;
     sout[46]=clipNumber;
@@ -242,4 +247,13 @@ void player::releaseDisplay(){
         libvlc_media_player_release(mp);
         //qDebug("media player releasing code");
     }
+}
+
+void player::startVideoProcess(){
+    mdetect->setSenseLevel(40);
+    mdetect->start();
+    connect(mdetect,SIGNAL(motionDetected()),this,SLOT(processMotionDetected()));
+}
+void player::processMotionDetected(){
+    qDebug("Signal received");
 }

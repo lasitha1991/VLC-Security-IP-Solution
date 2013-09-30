@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #ifndef MOTIONDETECTOR_H
 #define MOTIONDETECTOR_H
 #include <QtCore>
@@ -15,6 +18,7 @@ public:
     int exec();
     void setClip(char clip);
     void increaseClip();
+    void setSenseLevel(int lev);
 private:
     std::string filePath;
     char clipNo;

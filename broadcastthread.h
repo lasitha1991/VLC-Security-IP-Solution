@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #ifndef BROADCASTTHREAD_H
 #define BROADCASTTHREAD_H
 #include <QtCore>

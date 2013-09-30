@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <stdio.h>
@@ -113,4 +116,10 @@ void MainWindow::on_BtnLiveStream_clicked()
         p->setStreaming(false);
         ui->BtnLiveStream->setText("Live Stream");
     }
+}
+
+void MainWindow::on_BtnProcessVid_clicked()
+{
+
+    p->startVideoProcess();
 }

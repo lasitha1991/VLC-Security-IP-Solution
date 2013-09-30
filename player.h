@@ -1,3 +1,6 @@
+//Lasitha Weerasinghe
+//100577A
+
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -48,6 +51,9 @@ public slots:
     char giveClipNumber();
     void setDisplayWidget(QWidget *dis);
     void releaseDisplay();
+
+    void startVideoProcess();
+    void processMotionDetected();
 private:
     std::string clientAddress;
     bool boolrecord;
