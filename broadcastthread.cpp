@@ -14,7 +14,6 @@ BroadcastThread::~BroadcastThread(){
 
 void BroadcastThread::run(){    
     exec();
-
 }
 
 int BroadcastThread::exec(){

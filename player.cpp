@@ -5,7 +5,7 @@
 #include "ui_mainwindow.h"
 #include "streamthread.h"
 #include "filesavethread.h"
-
+#include "motiondetector.h"
 
 std::string soutraw="#transcode{vcodec=mp4v,vb=0,scale=0}:file{dst=_capture.mp4}";
 char *serverAddress="udp://127.0.0.1:1234";
@@ -18,6 +18,7 @@ player::player(QObject *parent) :    QObject(parent)
     clipNumber='0';
     boolstream=false;
     boolrecord=false;
+    mdetect=new MotionDetector();
 }
 
 void player::play()
@@ -190,17 +191,17 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
     char StreamClip;
     if(clipNumber=='0'){
-        //stream the clip which is 1 minute before
-        StreamClip='2';
+        //stream the clip which is 1 minute before precessed clip
+        StreamClip='1';//'2';
     }
     else if(clipNumber=='1'){
-        StreamClip='3';
+        StreamClip='2';
     }else if(clipNumber=='2'){
-        StreamClip='4';
+        StreamClip='3';
     }else if(clipNumber=='3'){
-        StreamClip='0';
+        StreamClip='4';
     }else if(clipNumber=='4'){
-        StreamClip='1';
+        StreamClip='0';
     }
     stream(StreamClip,st);
     playStream(StreamClip);

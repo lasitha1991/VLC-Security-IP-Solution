@@ -9,15 +9,49 @@ INCLUDEPATH += .
 
 # Input
 HEADERS += mainwindow.h player.h streamthread.h filesavethread.h \
-    broadcastthread.h
+    broadcastthread.h \
+    motiondetector.h
 FORMS += mainwindow.ui
 SOURCES += main.cpp mainwindow.cpp player.cpp streamthread.cpp filesavethread.cpp \
-    broadcastthread.cpp
+    broadcastthread.cpp \
+    motiondetector.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lvlc
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lvlc
 else:symbian: LIBS += -lvlc
 else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lvlc
+
+INCLUDEPATH += $$PWD/../../../../usr/include
+DEPENDPATH += $$PWD/../../../../usr/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lopencv_core
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lopencv_core
+else:symbian: LIBS += -lopencv_core
+else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lopencv_core
+
+INCLUDEPATH += $$PWD/../../../../usr/include
+DEPENDPATH += $$PWD/../../../../usr/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lopencv_video
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lopencv_video
+else:symbian: LIBS += -lopencv_video
+else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lopencv_video
+
+INCLUDEPATH += $$PWD/../../../../usr/include
+DEPENDPATH += $$PWD/../../../../usr/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lopencv_imgproc
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lopencv_imgproc
+else:symbian: LIBS += -lopencv_imgproc
+else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lopencv_imgproc
+
+INCLUDEPATH += $$PWD/../../../../usr/include
+DEPENDPATH += $$PWD/../../../../usr/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lopencv_highgui
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lopencv_highgui
+else:symbian: LIBS += -lopencv_highgui
+else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lopencv_highgui
 
 INCLUDEPATH += $$PWD/../../../../usr/include
 DEPENDPATH += $$PWD/../../../../usr/include

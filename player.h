@@ -10,6 +10,7 @@
 #include <vlc/vlc.h>
 #include "streamthread.h"
 #include "filesavethread.h"
+#include "motiondetector.h"
 
 namespace Domain {
 class player;
@@ -58,6 +59,7 @@ private:
     libvlc_media_player_t *mp;
     libvlc_media_t *m;
     QWidget *displayWid;
+    MotionDetector *mdetect;
 };
 
 #endif // PLAYER_H
