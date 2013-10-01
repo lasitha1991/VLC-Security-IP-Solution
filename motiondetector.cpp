@@ -13,7 +13,6 @@ MotionDetector::MotionDetector()
 {
     clipNo='4';
     filePath="4capture.mp4";
-    senseLevel=500;
 }
 
 
@@ -63,8 +62,8 @@ int MotionDetector::exec(){
 //        }
 //    }
     qDebug("start");
-    CvCapture * camera = //cvCaptureFromFile(filePath.c_str());
-            cvCaptureFromCAM(CV_CAP_ANY);
+    CvCapture * camera = cvCaptureFromFile(filePath.c_str());
+            //cvCaptureFromCAM(CV_CAP_ANY);
     cv::Mat original =cvQueryFrame(camera);
     cv::Mat next_frame = original;
     cv::Mat current_frame = cvQueryFrame(camera);
@@ -75,33 +74,42 @@ int MotionDetector::exec(){
     cv::Mat d1, d2, result;
     int window = 200;
     bool movement;
-    while (true){        
-        movement = false;
-        absdiff(next_frame, current_frame, d1);
-        absdiff(current_frame, prev_frame, d2);
-        bitwise_xor(d1, d2, result);
-        int middle_y = result.rows/2;
-        int middle_x = result.cols/2;
-        // Center window
-        threshold(result, result, 140, 255, CV_THRESH_BINARY);
-        for(int i = middle_x-window; i < middle_x+window; i++)
-            for(int j = middle_y-window; j < middle_y+window; j++)
-                if(result.at<int>(j,i)>0)
-                {
-                    movement = true;
-                    break;
-                }
-        if(movement==true){
-            qDebug("motion detected");
-            emit motionDetected();
+    while (true){
+        try{
+            movement = false;
+            absdiff(next_frame, current_frame, d1);
+            absdiff(current_frame, prev_frame, d2);
+            bitwise_xor(d1, d2, result);
+            int middle_y = result.rows/2;
+            int middle_x = result.cols/2;
+            // Center window
+            threshold(result, result, 140, 255, CV_THRESH_BINARY);
+            for(int i = middle_x-window; i < middle_x+window; i++)
+                for(int j = middle_y-window; j < middle_y+window; j++)
+                    if(result.at<int>(j,i)>0)
+                    {
+                        movement = true;
+                        break;
+                    }
+            if(movement==true){
+                qDebug("motion detected");
+                emit motionDetected();
+            }
+            //imshow("Motion", result);
+            prev_frame = current_frame;
+            current_frame = next_frame;
+            // get image from file
+            //next_frame = cvQueryFrame(camera);
+            int grabSucess=cvGrabFrame(camera);
+            if(grabSucess==0){
+                break;
+            }
+            next_frame=cvRetrieveFrame(camera);
+            cvtColor(next_frame, next_frame, CV_RGB2GRAY);
+            //qDebug("loop");
+        }catch(cv::Exception e){
+            break;
         }
-        //imshow("Motion", result);
-        prev_frame = current_frame;
-        current_frame = next_frame;
-        // get image from file
-        next_frame = cvQueryFrame(camera);
-        cvtColor(next_frame, next_frame, CV_RGB2GRAY);
-        qDebug("loop");
     }
 
     qDebug("method end");
@@ -118,7 +126,4 @@ void MotionDetector::increaseClip(){
         clipNo='0';
     }
     filePath[0]=clipNo;
-}
-void MotionDetector::setSenseLevel(int lev){
-    senseLevel=100+lev*10;
 }

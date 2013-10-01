@@ -18,11 +18,9 @@ public:
     int exec();
     void setClip(char clip);
     void increaseClip();
-    void setSenseLevel(int lev);
 private:
     std::string filePath;
     char clipNo;
-    int senseLevel;
 signals:
     void motionDetected();
 };

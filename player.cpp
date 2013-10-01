@@ -161,6 +161,12 @@ void player::saveWebcamToFile(){
     FilesaveThread *ft=new FilesaveThread();
     connect(ft,SIGNAL(finished()),this,SLOT(increaseClipNumber()));  //when filesave thread is finished increase the clip by one
     connect(ft,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));    //when filesave is finished start it again
+
+    /////////////////////////////////////
+    connect(ft,SIGNAL(finished()),this,SLOT(startVideoProcess()));
+    ////////////////////////////////////
+
+
     ft->setInst(inst,"v4l2:///dev/video0",(char*)sout.c_str());
 
     ft->start();
@@ -168,6 +174,9 @@ void player::saveWebcamToFile(){
     if(!boolrecord){  //if set to false disconnect the connections
         disconnect(ft,SIGNAL(finished()),this,SLOT(increaseClipNumber()));
         disconnect(ft,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));
+        /////
+        disconnect(ft,SIGNAL(finished()),this,SLOT(startVideoProcess()));
+        /////
         ft->terminate();
     }
 
@@ -213,8 +222,6 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
     QThread::connect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
     if(!MotionLastMin()){
         boolstream=false;
-        QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
-        st->terminate();
     }
     if(!boolstream){
         QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
@@ -222,7 +229,7 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
     }
 
     /////////////
-    increaseClipNumber();
+    //increaseClipNumber();
     qDebug("clip:%c MotionClip:%c",clipNumber,motionClipNumber);
     ////////////////
 }
@@ -259,8 +266,14 @@ void player::releaseDisplay(){
     }
 }
 
-void player::startVideoProcess(){
-    mdetect->setSenseLevel(40);
+void player::startVideoProcess(){    
+    char processClip=clipNumber;
+    if(processClip!=0){
+        processClip--;
+    }else{
+        processClip=4;
+    }
+    mdetect->setClip(processClip);
     mdetect->start();
     connect(mdetect,SIGNAL(motionDetected()),this,SLOT(processMotionDetected()));
 }
@@ -278,23 +291,23 @@ bool player::MotionLastMin(){
         return true;
     }
     if(motionClipNumber=='0'){
-        if(clipNumber=='1'){
-            return false;
-        }
-    }else if(motionClipNumber=='1'){
         if(clipNumber=='2'){
             return false;
         }
-    }else if(motionClipNumber=='2'){
+    }else if(motionClipNumber=='1'){
         if(clipNumber=='3'){
             return false;
         }
-    }else if(motionClipNumber=='3'){
+    }else if(motionClipNumber=='2'){
         if(clipNumber=='4'){
             return false;
         }
-    }else if(motionClipNumber=='4'){
+    }else if(motionClipNumber=='3'){
         if(clipNumber=='0'){
+            return false;
+        }
+    }else if(motionClipNumber=='4'){
+        if(clipNumber=='1'){
             return false;
         }
     }
