@@ -211,10 +211,20 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
     stream(StreamClip,st);
     playStream(StreamClip);
     QThread::connect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
+    if(!MotionLastMin()){
+        boolstream=false;
+        QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
+        st->terminate();
+    }
     if(!boolstream){
         QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
         st->terminate();
     }
+
+    /////////////
+    increaseClipNumber();
+    qDebug("clip:%c MotionClip:%c",clipNumber,motionClipNumber);
+    ////////////////
 }
 
 
@@ -256,4 +266,37 @@ void player::startVideoProcess(){
 }
 void player::processMotionDetected(){
     qDebug("Signal received");
+    motionClipNumber=clipNumber;
+    if(!isStreaming()){
+        setStreaming(true);
+        streamLastMinute();
+        qDebug("Start Stream");
+    }
+}
+bool player::MotionLastMin(){
+    if(motionClipNumber==clipNumber){
+        return true;
+    }
+    if(motionClipNumber=='0'){
+        if(clipNumber=='1'){
+            return false;
+        }
+    }else if(motionClipNumber=='1'){
+        if(clipNumber=='2'){
+            return false;
+        }
+    }else if(motionClipNumber=='2'){
+        if(clipNumber=='3'){
+            return false;
+        }
+    }else if(motionClipNumber=='3'){
+        if(clipNumber=='4'){
+            return false;
+        }
+    }else if(motionClipNumber=='4'){
+        if(clipNumber=='0'){
+            return false;
+        }
+    }
+    return true;
 }

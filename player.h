@@ -54,12 +54,14 @@ public slots:
 
     void startVideoProcess();
     void processMotionDetected();
+    bool MotionLastMin();
 private:
     std::string clientAddress;
     bool boolrecord;
     bool boolstream;
     bool boolwebcamon;
     char clipNumber;
+    char motionClipNumber;
     libvlc_instance_t *inst;
     libvlc_instance_t *streamInst;
     libvlc_media_player_t *mp;
