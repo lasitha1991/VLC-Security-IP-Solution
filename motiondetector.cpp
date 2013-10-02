@@ -61,7 +61,8 @@ int MotionDetector::exec(){
 //            qDebug(filePath.c_str());
 //        }
 //    }
-    qDebug("start");
+
+    //qDebug("start");
     CvCapture * camera = cvCaptureFromFile(filePath.c_str());
             //cvCaptureFromCAM(CV_CAP_ANY);
     cv::Mat original =cvQueryFrame(camera);
@@ -94,6 +95,7 @@ int MotionDetector::exec(){
             if(movement==true){
                 qDebug("motion detected");
                 emit motionDetected();
+                break;
             }
             //imshow("Motion", result);
             prev_frame = current_frame;
@@ -112,7 +114,7 @@ int MotionDetector::exec(){
         }
     }
 
-    qDebug("method end");
+    //qDebug("method end");
 }
 
 void MotionDetector::setClip(char clip){

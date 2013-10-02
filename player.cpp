@@ -153,7 +153,7 @@ void player::stream(char StreamClip,StreamThread *st){ //starts a unicast stream
 }
 
 void player::saveWebcamToFile(){
-
+    qDebug("recored clip:%c",clipNumber);
     std::string sout;
     sout=soutraw;
     sout[46]=clipNumber;
@@ -178,8 +178,7 @@ void player::saveWebcamToFile(){
         disconnect(ft,SIGNAL(finished()),this,SLOT(startVideoProcess()));
         /////
         ft->terminate();
-    }
-
+    }        
 }
 void player::streamLive(){
     releaseDisplay();
@@ -268,22 +267,23 @@ void player::releaseDisplay(){
 
 void player::startVideoProcess(){    
     char processClip=clipNumber;
-    if(processClip!=0){
+    if(processClip!='0'){
         processClip--;
     }else{
-        processClip=4;
+        processClip='4';
     }
+    qDebug("process clip: %c Clip:%c",processClip,clipNumber);
     mdetect->setClip(processClip);
     mdetect->start();
     connect(mdetect,SIGNAL(motionDetected()),this,SLOT(processMotionDetected()));
 }
 void player::processMotionDetected(){
-    qDebug("Signal received");
+    //qDebug("Signal received");
     motionClipNumber=clipNumber;
     if(!isStreaming()){
         setStreaming(true);
         streamLastMinute();
-        qDebug("Start Stream");
+        //qDebug("Start Stream");
     }
 }
 bool player::MotionLastMin(){
