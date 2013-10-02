@@ -149,7 +149,7 @@ void player::stream(char StreamClip,StreamThread *st){ //starts a unicast stream
     st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming
     connect(st,SIGNAL(finished()),this,SLOT(releaseDisplay()));  //after finishing stream release the display to start a new media
     st->start();  //streaming starts
-
+    qDebug("Streaming clip:%c",StreamClip);
 }
 
 void player::saveWebcamToFile(){
@@ -220,7 +220,7 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
     playStream(StreamClip);
     QThread::connect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
     if(!MotionLastMin()){
-        boolstream=false;
+        boolstream=false;        
     }
     if(!boolstream){
         QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
@@ -279,7 +279,11 @@ void player::startVideoProcess(){
 }
 void player::processMotionDetected(){
     //qDebug("Signal received");
-    motionClipNumber=clipNumber;
+    if(clipNumber!=0){
+        motionClipNumber=clipNumber-1;
+    }else{
+        motionClipNumber='4';
+    }
     if(!isStreaming()){
         setStreaming(true);
         streamLastMinute();
@@ -287,27 +291,24 @@ void player::processMotionDetected(){
     }
 }
 bool player::MotionLastMin(){
-    if(motionClipNumber==clipNumber){
-        return true;
-    }
     if(motionClipNumber=='0'){
-        if(clipNumber=='2'){
-            return false;
-        }
-    }else if(motionClipNumber=='1'){
-        if(clipNumber=='3'){
-            return false;
-        }
-    }else if(motionClipNumber=='2'){
         if(clipNumber=='4'){
             return false;
         }
-    }else if(motionClipNumber=='3'){
+    }else if(motionClipNumber=='1'){
         if(clipNumber=='0'){
             return false;
         }
-    }else if(motionClipNumber=='4'){
+    }else if(motionClipNumber=='2'){
         if(clipNumber=='1'){
+            return false;
+        }
+    }else if(motionClipNumber=='3'){
+        if(clipNumber=='2'){
+            return false;
+        }
+    }else if(motionClipNumber=='4'){
+        if(clipNumber=='3'){
             return false;
         }
     }

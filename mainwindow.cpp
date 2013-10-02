@@ -95,6 +95,7 @@ void MainWindow::setClient()
 
 void MainWindow::on_BtnStartCtsRecord_clicked()
 {
+    setClient();
     if(!p->isRecording()){
         p->setRecording(true);
         p->saveWebcamToFile();
