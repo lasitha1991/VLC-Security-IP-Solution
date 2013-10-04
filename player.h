@@ -33,7 +33,7 @@ public slots:
     void pause();
     void stop();
     void load(char* fileName);
-    void stream(char sClip,StreamThread *st);
+    void stream(char sClip);
     void setClientAddress(QString addr);
     char* giveClientAddress();
     void receiveStream();
@@ -68,6 +68,7 @@ private:
     libvlc_media_t *m;
     QWidget *displayWid;
     MotionDetector *mdetect;
+    StreamThread *sThread;
 };
 
 #endif // PLAYER_H

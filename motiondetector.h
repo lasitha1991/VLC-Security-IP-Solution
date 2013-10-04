@@ -17,7 +17,6 @@ public:
     void run();
     int exec();
     void setClip(char clip);
-    void increaseClip();
 private:
     std::string filePath;
     char clipNo;

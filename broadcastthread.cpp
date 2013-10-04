@@ -9,7 +9,7 @@
 
 BroadcastThread::BroadcastThread()
 {
-    clipLength=20;
+    clipLength=5;
 }
 BroadcastThread::~BroadcastThread(){
 

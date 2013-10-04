@@ -11,7 +11,7 @@
 #include "motiondetector.h"
 
 std::string soutraw="#transcode{vcodec=mp4v,vb=0,scale=0}:file{dst=_capture.mp4}";
-char *serverAddress="udp://127.0.0.1:1234";
+//char *serverAddress="udp://127.0.0.1:1234";
 
 
 player::player(QObject *parent) :    QObject(parent)
@@ -21,8 +21,10 @@ player::player(QObject *parent) :    QObject(parent)
     clipNumber='0';
     boolstream=false;
     boolrecord=false;
+    clientAddress="udp://127.0.0.1";
     mdetect=new MotionDetector();
-
+    //sThread=new StreamThread();
+    connect(mdetect,SIGNAL(motionDetected()),this,SLOT(processMotionDetected()));
 }
 
 void player::play()
@@ -103,7 +105,7 @@ void player::pause(){
 
 
 void player::receiveStream(){
-    load(serverAddress);
+    //load(serverAddress);
 }
 void player::loadWebCam(){
     libvlc_media_player_release(mp);
@@ -145,10 +147,11 @@ char* player::giveClientAddress(){
     return (char*)clientAddress.c_str();
 }
 
-void player::stream(char StreamClip,StreamThread *st){ //starts a unicast stream thread
-    st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming
-    connect(st,SIGNAL(finished()),this,SLOT(releaseDisplay()));  //after finishing stream release the display to start a new media
-    st->start();  //streaming starts
+void player::stream(char StreamClip){ //starts a unicast stream thread
+    //st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming
+    sThread->setInst(streamInst,StreamClip,this->giveClientAddress());
+    connect(sThread,SIGNAL(finished()),this,SLOT(releaseDisplay()));  //after finishing stream release the display to start a new media
+    sThread->start();  //streaming starts
     qDebug("Streaming clip:%c",StreamClip);
 }
 
@@ -184,7 +187,7 @@ void player::streamLive(){
     releaseDisplay();
     StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
     connect(st,SIGNAL(finished()),this,SLOT(streamLive()));
-    stream('9',st);         //9 to represent live stream
+    stream('9');         //9 to represent live stream
     if(!(this->isStreaming())){
         disconnect(st,SIGNAL(finished()),this,SLOT(streamLive()));
         st->terminate();
@@ -192,19 +195,26 @@ void player::streamLive(){
 }
 
 void player::increaseClipNumber(){
-    if(clipNumber!='4'){
+    if(clipNumber!='5'){
         clipNumber++;
-    }else{              //if clipnumber is 4 set it to 0
+    }else{              //if clipnumber is 5 set it to 0
         clipNumber='0';
+    }
+    if(!MotionLastMin()){
+        boolstream=false;
+    }
+    if(boolstream){
+        streamLastMinute();
     }
 }
 
 void player::streamLastMinute(){  //if player is at one instance stream last three instances
     releaseDisplay();
-    StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+     //creating an object instance prevents destroying thread while running
+    sThread=new StreamThread();
     char StreamClip;
     if(clipNumber=='0'){
-        //stream the clip which is 1 minute before precessed clip
+        //stream the clip which is 1 minute before processed clip
         StreamClip='1';//'2';
     }
     else if(clipNumber=='1'){
@@ -214,18 +224,18 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
     }else if(clipNumber=='3'){
         StreamClip='4';
     }else if(clipNumber=='4'){
+        StreamClip='5';
+    }else if(clipNumber=='5'){
         StreamClip='0';
     }
-    stream(StreamClip,st);
+    stream(StreamClip);
     playStream(StreamClip);
-    QThread::connect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
-    if(!MotionLastMin()){
-        boolstream=false;        
-    }
-    if(!boolstream){
-        QThread::disconnect(st,SIGNAL(finished()),this,SLOT(streamLastMinute()));
-        st->terminate();
-    }
+    //QThread::connect(sThread,SIGNAL(finished()),this,SLOT(streamLastMinute()));
+
+    //if(!boolstream){
+      //  QThread::disconnect(sThread,SIGNAL(finished()),this,SLOT(streamLastMinute()));
+      //  sThread->terminate();
+    //}
 
     /////////////
     //increaseClipNumber();
@@ -270,29 +280,29 @@ void player::startVideoProcess(){
     if(processClip!='0'){
         processClip--;
     }else{
-        processClip='4';
+        processClip='5';
     }
     qDebug("process clip: %c Clip:%c",processClip,clipNumber);
     mdetect->setClip(processClip);
     mdetect->start();
-    connect(mdetect,SIGNAL(motionDetected()),this,SLOT(processMotionDetected()));
+
 }
 void player::processMotionDetected(){
     //qDebug("Signal received");
-    if(clipNumber!=0){
+    if(clipNumber!='0'){
         motionClipNumber=clipNumber-1;
     }else{
-        motionClipNumber='4';
+        motionClipNumber='5';
     }
     if(!isStreaming()){
         setStreaming(true);
-        streamLastMinute();
+        //streamLastMinute();
         //qDebug("Start Stream");
     }
 }
 bool player::MotionLastMin(){
     if(motionClipNumber=='0'){
-        if(clipNumber=='4'){
+        if(clipNumber=='5'){
             return false;
         }
     }else if(motionClipNumber=='1'){
@@ -309,6 +319,10 @@ bool player::MotionLastMin(){
         }
     }else if(motionClipNumber=='4'){
         if(clipNumber=='3'){
+            return false;
+        }
+    }else if(motionClipNumber=='5'){
+        if(clipNumber=='4'){
             return false;
         }
     }

@@ -121,11 +121,4 @@ void MotionDetector::setClip(char clip){
     clipNo=clip;
     filePath[0]=clipNo;
 }
-void MotionDetector::increaseClip(){
-    if(clipNo!='4'){
-        clipNo++;
-    }else{              //if clipnumber is 4 set it to 0
-        clipNo='0';
-    }
-    filePath[0]=clipNo;
-}
+

@@ -38,6 +38,8 @@ private slots:
 
     void on_BtnProcessVid_clicked();
 
+    void on_MainWindow_destroyed();
+
 private:
     Ui::MainWindow *ui;
 };
