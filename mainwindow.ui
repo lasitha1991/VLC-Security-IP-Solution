@@ -141,7 +141,7 @@
      <string>Live Stream</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="cmbClipLength">
     <property name="geometry">
      <rect>
       <x>320</x>

@@ -27,6 +27,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->display->setPalette( plt );
     p->setDisplayWidget(ui->display);
     p->load("0capture.mp4");
+
+
+    ui->cmbClipLength->addItem("20");
+    ui->cmbClipLength->addItem("30");
+    ui->cmbClipLength->addItem("10");
+
 }
 
 MainWindow::~MainWindow()
@@ -126,3 +132,9 @@ void MainWindow::on_BtnProcessVid_clicked()
 }
 
 
+
+void MainWindow::on_cmbClipLength_currentIndexChanged(const QString &arg1)
+{
+    int l=arg1.toInt();
+    p->setClipLength(l);
+}

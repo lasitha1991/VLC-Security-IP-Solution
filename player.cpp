@@ -152,6 +152,7 @@ char* player::giveClientAddress(){
 void player::stream(char StreamClip){ //starts a unicast stream thread
     //st->setInst(streamInst,StreamClip,this->giveClientAddress()); //streams thread sets data for streaming
     sThread->setInst(streamInst,StreamClip,this->giveClientAddress());
+    sThread->setClipLength(clipLength);
     connect(sThread,SIGNAL(finished()),this,SLOT(releaseDisplay()));  //after finishing stream release the display to start a new media
     sThread->start();  //streaming starts
     qDebug("Streaming clip:%c",StreamClip);
@@ -173,7 +174,7 @@ void player::saveWebcamToFile(){
 
 
     ft->setInst(inst,"v4l2:///dev/video0",(char*)sout.c_str());
-
+    ft->setClipLength(clipLength);
     ft->start();
 
     if(!boolrecord){  //if set to false disconnect the connections
@@ -318,4 +319,9 @@ void player::deleteTempFile(){
             qDebug("File successfully deleted" );
         }
     }
+}
+
+void player::setClipLength(int length){
+    //to set the clip length in broadcast thread
+    clipLength=length;
 }

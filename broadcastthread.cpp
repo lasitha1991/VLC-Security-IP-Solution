@@ -50,3 +50,6 @@ void BroadcastThread::setFilePath(char *sAddr){
 void BroadcastThread::setClientAddr(char *cAddr){
     clientAddressb=cAddr;   //set the destination address in thread
 }
+void BroadcastThread::setClipLength(int length){
+    clipLength=length;
+}

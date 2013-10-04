@@ -39,6 +39,8 @@ private slots:
     void on_BtnProcessVid_clicked();
 
 
+    void on_cmbClipLength_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 };

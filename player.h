@@ -58,12 +58,15 @@ public slots:
     void processMotionDetected();
     void processMotionNotDetected();
     bool MotionLastMin();
+
+    void setClipLength(int length);
 private:
     std::string clientAddress;
     bool boolrecord;
     bool boolstream;
     bool boolwebcamon;
     char clipNumber;
+    int clipLength;
     int timeSinceLastMotion;
     libvlc_instance_t *inst;
     libvlc_instance_t *streamInst;
