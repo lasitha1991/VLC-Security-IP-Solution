@@ -22,6 +22,7 @@ private:
     char clipNo;
 signals:
     void motionDetected();
+    void motionNotDetected();
 };
 
 #endif // MOTIONDETECTOR_H

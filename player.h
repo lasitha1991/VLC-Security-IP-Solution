@@ -52,8 +52,11 @@ public slots:
     void setDisplayWidget(QWidget *dis);
     void releaseDisplay();
 
+    void deleteTempFile();
+
     void startVideoProcess();
     void processMotionDetected();
+    void processMotionNotDetected();
     bool MotionLastMin();
 private:
     std::string clientAddress;
@@ -61,7 +64,7 @@ private:
     bool boolstream;
     bool boolwebcamon;
     char clipNumber;
-    char motionClipNumber;
+    int timeSinceLastMotion;
     libvlc_instance_t *inst;
     libvlc_instance_t *streamInst;
     libvlc_media_player_t *mp;

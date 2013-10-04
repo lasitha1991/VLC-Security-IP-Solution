@@ -43,7 +43,7 @@ void MainWindow::on_Btnplay_clicked()
 void MainWindow::on_BtnStream_clicked()
 {
     setClient();
-    StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
+    //StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
     p->stream('0');
 }
 
@@ -103,6 +103,7 @@ void MainWindow::on_BtnStartCtsRecord_clicked()
     }else{
         //code to stop recording
         p->setRecording(false);
+        //p->deleteTempFile();
         ui->BtnStartCtsRecord->setText("Start Continuous Recording");
     }
 }
@@ -124,7 +125,4 @@ void MainWindow::on_BtnProcessVid_clicked()
     p->startVideoProcess();
 }
 
-void MainWindow::on_MainWindow_destroyed()
-{
-    //delete all tempory video clips
-}
+

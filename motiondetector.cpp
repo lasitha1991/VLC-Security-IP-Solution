@@ -104,6 +104,8 @@ int MotionDetector::exec(){
             //next_frame = cvQueryFrame(camera);
             int grabSucess=cvGrabFrame(camera);
             if(grabSucess==0){
+                //motion not detected
+                emit motionNotDetected();
                 break;
             }
             next_frame=cvRetrieveFrame(camera);

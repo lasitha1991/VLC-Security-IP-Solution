@@ -22,9 +22,11 @@ player::player(QObject *parent) :    QObject(parent)
     boolstream=false;
     boolrecord=false;
     clientAddress="udp://127.0.0.1";
+    timeSinceLastMotion=0;
     mdetect=new MotionDetector();
     //sThread=new StreamThread();
     connect(mdetect,SIGNAL(motionDetected()),this,SLOT(processMotionDetected()));
+    connect(mdetect,SIGNAL(motionNotDetected()),this,SLOT(processMotionNotDetected()));
 }
 
 void player::play()
@@ -203,16 +205,17 @@ void player::increaseClipNumber(){
     if(!MotionLastMin()){
         boolstream=false;
     }
-    if(boolstream){
+    if(boolstream){        
         streamLastMinute();
     }
 }
 
-void player::streamLastMinute(){  //if player is at one instance stream last three instances
-    releaseDisplay();
+void player::streamLastMinute(){  //if player is at one instance stream last three instances    
+    releaseDisplay();    
      //creating an object instance prevents destroying thread while running
     sThread=new StreamThread();
-    char StreamClip;
+
+    char StreamClip='0';
     if(clipNumber=='0'){
         //stream the clip which is 1 minute before processed clip
         StreamClip='1';//'2';
@@ -236,11 +239,6 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
       //  QThread::disconnect(sThread,SIGNAL(finished()),this,SLOT(streamLastMinute()));
       //  sThread->terminate();
     //}
-
-    /////////////
-    //increaseClipNumber();
-    qDebug("clip:%c MotionClip:%c",clipNumber,motionClipNumber);
-    ////////////////
 }
 
 
@@ -288,43 +286,36 @@ void player::startVideoProcess(){
 
 }
 void player::processMotionDetected(){
+    timeSinceLastMotion=0;
+
     //qDebug("Signal received");
-    if(clipNumber!='0'){
-        motionClipNumber=clipNumber-1;
-    }else{
-        motionClipNumber='5';
-    }
     if(!isStreaming()){
         setStreaming(true);
         //streamLastMinute();
         //qDebug("Start Stream");
-    }
+    }    
 }
+void player::processMotionNotDetected(){
+    timeSinceLastMotion++;
+    qDebug("time since last motion: %d",timeSinceLastMotion);
+}
+
 bool player::MotionLastMin(){
-    if(motionClipNumber=='0'){
-        if(clipNumber=='5'){
-            return false;
+    if(timeSinceLastMotion<=6){
+        return true;
+    }
+    return false;
+}
+
+void player::deleteTempFile(){
+    std::string fnam="_capture.mp4";
+    for(char i='0';i<'6';i++){
+        fnam[0]=i;
+        if( remove( fnam.c_str())== 0 ){
+            qDebug("Error deleting file" );
         }
-    }else if(motionClipNumber=='1'){
-        if(clipNumber=='0'){
-            return false;
-        }
-    }else if(motionClipNumber=='2'){
-        if(clipNumber=='1'){
-            return false;
-        }
-    }else if(motionClipNumber=='3'){
-        if(clipNumber=='2'){
-            return false;
-        }
-    }else if(motionClipNumber=='4'){
-        if(clipNumber=='3'){
-            return false;
-        }
-    }else if(motionClipNumber=='5'){
-        if(clipNumber=='4'){
-            return false;
+        else{
+            qDebug("File successfully deleted" );
         }
     }
-    return true;
 }
