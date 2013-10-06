@@ -16,7 +16,6 @@ public:
     StreamThread();
     void setInst(libvlc_instance_t *in,char clip,char *cAddr);    
 private:
-    char clip;
     void setClip(char clip);
 };
 

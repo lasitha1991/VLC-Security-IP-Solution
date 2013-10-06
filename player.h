@@ -67,7 +67,9 @@ private:
     bool boolwebcamon;
     char clipNumber;
     int clipLength;
+    char maxNoOfClips;
     int timeSinceLastMotion;
+    int maxNoMotionDuration;
     libvlc_instance_t *inst;
     libvlc_instance_t *streamInst;
     libvlc_media_player_t *mp;
@@ -75,6 +77,7 @@ private:
     QWidget *displayWid;
     MotionDetector *mdetect;
     StreamThread *sThread;
+
 };
 
 #endif // PLAYER_H

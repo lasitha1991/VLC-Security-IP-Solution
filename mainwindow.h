@@ -20,24 +20,9 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_Btnplay_clicked();
-
-    void on_BtnStream_clicked();
-
-    void on_BtnReceive_clicked();
-
-    void on_BtnWebCam_clicked();
-
-    void on_BtnFromLastMinStream_clicked();
-
     void setClient();
 
     void on_BtnStartCtsRecord_clicked();
-
-    void on_BtnLiveStream_clicked();
-
-    void on_BtnProcessVid_clicked();
-
 
     void on_cmbClipLength_currentIndexChanged(const QString &arg1);
 

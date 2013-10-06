@@ -10,9 +10,8 @@ StreamThread::StreamThread()
 }
 
 void StreamThread::setClip(char clip){
-    if(clip!='9'){              //9 is for live streaming
+    if(clip!='-'){              //- is for live streaming
         std::string fileName="_capture.mp4";  //make a local clip name
-        this->clip=clip;
         fileName[0]=clip;
         setFilePath((char*)fileName.c_str());
     }else{

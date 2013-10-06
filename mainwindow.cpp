@@ -32,60 +32,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cmbClipLength->addItem("20");
     ui->cmbClipLength->addItem("30");
     ui->cmbClipLength->addItem("10");
-
+    ui->statusBar->showMessage("Welcome to VLC Security Camera Solution",4000);
 }
 
 MainWindow::~MainWindow()
 {
+    p->deleteTempFile();
     delete ui;
     delete p;
-}
-
-void MainWindow::on_Btnplay_clicked()
-{
-    p->play();
-}
-
-void MainWindow::on_BtnStream_clicked()
-{
-    setClient();
-    //StreamThread *st=new StreamThread(); //creating an object instance prevents destroying thread while running
-    p->stream('0');
-}
-
-void MainWindow::on_BtnReceive_clicked()
-{
-    p->receiveStream();
-}
-
-void MainWindow::on_BtnWebCam_clicked()
-{
-    if(!p->isWebcamOn()){
-        p->setWebcam(true);
-        p->loadWebCam();
-        ui->BtnWebCam->setText("WebcamLoaded");
-        p->play();
-    }else{
-        p->setWebcam(false);
-        p->stop();
-        p->releaseDisplay();
-        ui->BtnWebCam->setText("Webcam");
-    }
-}
-
-
-void MainWindow::on_BtnFromLastMinStream_clicked()
-{
-    if(!p->isStreaming()){
-        setClient();
-        p->setStreaming(true);
-        p->streamLastMinute();
-        ui->BtnFromLastMinStream->setText("Stop Streaming");
-    }else{
-        //code to stop streaming
-        p->setStreaming(false);
-        ui->BtnFromLastMinStream->setText("Start Streaming From Last Minute");
-    }
 }
 
 
@@ -105,31 +59,17 @@ void MainWindow::on_BtnStartCtsRecord_clicked()
     if(!p->isRecording()){
         p->setRecording(true);
         p->saveWebcamToFile();
-        ui->BtnStartCtsRecord->setText("Stop Continuous Recording");
+        ui->BtnStartCtsRecord->setText("Exit");
+        ui->statusBar->showMessage("Started",1000);
     }else{
         //code to stop recording
         p->setRecording(false);
         p->deleteTempFile();
-        ui->BtnStartCtsRecord->setText("Start Continuous Recording");
+        ui->BtnStartCtsRecord->hide();
+        ui->statusBar->showMessage("wait until current stream finishes",1000);
     }
 }
 
-void MainWindow::on_BtnLiveStream_clicked()
-{
-    if(!(p->isStreaming())){
-        p->setStreaming(true);
-        p->streamLive();
-        ui->BtnLiveStream->setText("Stop Live Stream");
-    }else{
-        p->setStreaming(false);
-        ui->BtnLiveStream->setText("Live Stream");
-    }
-}
-
-void MainWindow::on_BtnProcessVid_clicked()
-{
-    p->startVideoProcess();
-}
 
 
 
