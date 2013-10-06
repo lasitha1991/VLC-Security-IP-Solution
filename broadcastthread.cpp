@@ -23,7 +23,7 @@ int BroadcastThread::exec(){
 
     mutex=new QMutex();
     QMutexLocker locker(mutex);
-
+    qDebug("Streming to :%s",clientAddressb.c_str());
     libvlc_vlm_add_broadcast(instb, "video stream", filePathb.c_str(), clientAddressb.c_str(), 0,NULL, true, false);
     libvlc_vlm_play_media(instb, "video stream");
 

@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     p->setDisplayWidget(ui->display);
     p->load("0capture.mp4");
 
-
+    ui->cmbClipLength->addItem("5");
     ui->cmbClipLength->addItem("20");
     ui->cmbClipLength->addItem("30");
     ui->cmbClipLength->addItem("10");
@@ -109,7 +109,7 @@ void MainWindow::on_BtnStartCtsRecord_clicked()
     }else{
         //code to stop recording
         p->setRecording(false);
-        //p->deleteTempFile();
+        p->deleteTempFile();
         ui->BtnStartCtsRecord->setText("Start Continuous Recording");
     }
 }
