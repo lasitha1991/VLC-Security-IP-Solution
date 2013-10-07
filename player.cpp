@@ -19,14 +19,13 @@ player::player(QObject *parent) :    QObject(parent)
     inst = libvlc_new(0, NULL);
     streamInst=libvlc_new(0,NULL);
     clipNumber='0';
+    timeSinceLastMotion=0;
     boolstream=false;
     boolrecord=false;
     clientAddress="udp://127.0.0.1";
-    timeSinceLastMotion=0;
     maxNoOfClips='5';
     maxNoMotionDuration=6;
     mdetect=new MotionDetector();
-    //sThread=new StreamThread();
     connect(mdetect,SIGNAL(motionDetected()),this,SLOT(processMotionDetected()));
     connect(mdetect,SIGNAL(motionNotDetected()),this,SLOT(processMotionNotDetected()));
 }
@@ -74,6 +73,8 @@ void player::setDisplayWidget(QWidget *dis){
 
 void player::load(char* fileName){
     // create a new item
+
+
     m = libvlc_media_new_path(inst, fileName);
     if(!m){
         exit(EXIT_FAILURE);
@@ -156,7 +157,14 @@ void player::stream(char StreamClip){ //starts a unicast stream thread
     sThread->setInst(streamInst,StreamClip,this->giveClientAddress());
     sThread->setClipLength(clipLength);
     connect(sThread,SIGNAL(finished()),this,SLOT(releaseDisplay()));  //after finishing stream release the display to start a new media
-    sThread->start();  //streaming starts
+    if(sThread->isClipAvailable()){
+        sThread->start();  //streaming starts
+        motionClipAvailable=true;
+    }else{
+        qDebug("Clip Not available");
+        motionClipAvailable=false;
+        emit clipNotAvailable();
+    }
     qDebug("Streaming clip:%c",StreamClip);
 }
 
@@ -166,26 +174,27 @@ void player::saveWebcamToFile(){
     sout=soutraw;
     sout[46]=clipNumber;
 
-    FilesaveThread *ft=new FilesaveThread();
-    connect(ft,SIGNAL(finished()),this,SLOT(increaseClipNumber()));  //when filesave thread is finished increase the clip by one
-    connect(ft,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));    //when filesave is finished start it again
+    //FilesaveThread *ft=new FilesaveThread();
+    fThread=new FilesaveThread();
+    connect(fThread,SIGNAL(finished()),this,SLOT(increaseClipNumber()));  //when filesave thread is finished increase the clip by one
+    connect(fThread,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));    //when filesave is finished start it again
 
     /////////////////////////////////////
-    connect(ft,SIGNAL(finished()),this,SLOT(startVideoProcess()));
+    connect(fThread,SIGNAL(finished()),this,SLOT(startVideoProcess()));
     ////////////////////////////////////
 
 
-    ft->setInst(inst,"v4l2:///dev/video0",(char*)sout.c_str());
-    ft->setClipLength(clipLength);
-    ft->start();
+    fThread->setInst(inst,"v4l2:///dev/video0",(char*)sout.c_str());
+    fThread->setClipLength(clipLength);
+    fThread->start();
 
     if(!boolrecord){  //if set to false disconnect the connections
-        disconnect(ft,SIGNAL(finished()),this,SLOT(increaseClipNumber()));
-        disconnect(ft,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));
+        disconnect(fThread,SIGNAL(finished()),this,SLOT(increaseClipNumber()));
+        disconnect(fThread,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));
         /////
-        disconnect(ft,SIGNAL(finished()),this,SLOT(startVideoProcess()));
+        disconnect(fThread,SIGNAL(finished()),this,SLOT(startVideoProcess()));
         /////
-        ft->terminate();
+        fThread->terminate();
     }        
 }
 void player::streamLive(){
@@ -239,6 +248,13 @@ void player::streamLastMinute(){  //if player is at one instance stream last thr
 
 
 void player::setRecording(bool val){
+    if(!val){
+        disconnect(fThread,SIGNAL(finished()),this,SLOT(increaseClipNumber()));
+        disconnect(fThread,SIGNAL(finished()),this,SLOT(saveWebcamToFile()));
+        /////
+        disconnect(fThread,SIGNAL(finished()),this,SLOT(startVideoProcess()));
+        /////
+    }
     boolrecord=val;
 }
 void player::setStreaming(bool val){
@@ -256,6 +272,9 @@ bool player::isStreaming(){
 }
 bool player::isWebcamOn(){
     return boolwebcamon;
+}
+bool player::isMotionClipAvailable(){
+    return motionClipAvailable;
 }
 
 char player::giveClipNumber(){
@@ -303,16 +322,10 @@ bool player::MotionLastMin(){
     return false;
 }
 
-void player::deleteTempFile(){
+void player::deleteTempFile(){    
     std::string fnam="_capture.mp4";
     for(char i='0';i<=maxNoOfClips;i++){
         fnam[0]=i;
-        ifstream a_file ( fnam.c_str() );
-
-        if ( !a_file.is_open() ) {
-          // The file could not be opened
-            qDebug("Cannot open");
-        }
         if( remove( fnam.c_str())== 0 ){
             qDebug("File successfully deleted" );
         }
@@ -326,6 +339,12 @@ void player::setClipLength(QString length){
     //to set the clip length in broadcast thread
     int len;
     len=length.split(' ')[0].toInt();
+    len/=3;
     clipLength=len;
+}
+
+void player::resetAll(){
+    clipNumber='0';
+    timeSinceLastMotion=0;
 }
 

@@ -27,6 +27,7 @@ public:
 
 signals:
     void statusUpdated();
+    void clipNotAvailable();
 
 public slots:
     void play();
@@ -59,13 +60,16 @@ public slots:
     void processMotionDetected();
     void processMotionNotDetected();
     bool MotionLastMin();
+    bool isMotionClipAvailable();
 
     void setClipLength(QString length);
+    void resetAll();
 private:
     std::string clientAddress;
     bool boolrecord;
     bool boolstream;
     bool boolwebcamon;
+    bool motionClipAvailable;
     char clipNumber;
     int clipLength;
     char maxNoOfClips;
@@ -78,6 +82,7 @@ private:
     QWidget *displayWid;
     MotionDetector *mdetect;
     StreamThread *sThread;
+    FilesaveThread *fThread;
 
 };
 

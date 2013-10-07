@@ -38,8 +38,9 @@ MainWindow::MainWindow(QWidget *parent) :
     for(int i=0;i<optionCount;i++){
         ui->cmbClipLength->addItem(lenghtArray[i].c_str());
     }
-    ui->statusBar->showMessage("Welcome to VLC Security Camera Solution",4000);
+    clearStatusBar();
     connect(p,SIGNAL(statusUpdated()),this,SLOT(updateStatusBar()));
+    connect(p,SIGNAL(clipNotAvailable()),this,SLOT(updateStatusBar()));
 }
 
 MainWindow::~MainWindow()
@@ -62,19 +63,26 @@ void MainWindow::setClient()
 
 void MainWindow::on_BtnStartCtsRecord_clicked()
 {
-    setClient();
-    ui->cmbClipLength->setEnabled(false);
+    setClient();    
     if(!p->isRecording()){
         p->setRecording(true);
         p->saveWebcamToFile();
-        ui->BtnStartCtsRecord->setText("Exit");
-        ui->statusBar->showMessage("Started",1000);        
+        ui->txtClientAddr->setEnabled(false);
+        ui->cmbClipLength->setEnabled(false);
+        ui->BtnStartCtsRecord->setText("Stop");
+        ui->statusBar->showMessage("Started",3000);
     }else{
         //code to stop recording
+        ui->BtnStartCtsRecord->setText("Please wait..");
+        ui->statusBar->showMessage("wait until current process finishes",3000);
         p->setRecording(false);
+        p->setStreaming(false);
         p->deleteTempFile();
-        ui->BtnStartCtsRecord->hide();
-        ui->statusBar->showMessage("wait until current process finishes",1000);
+        p->resetAll();
+        ui->txtClientAddr->setEnabled(true);
+        ui->cmbClipLength->setEnabled(true);
+        ui->BtnStartCtsRecord->setText("Start");
+
     }
 }
 
@@ -89,9 +97,17 @@ void MainWindow::on_cmbClipLength_currentIndexChanged(const QString &arg1)
 void MainWindow::updateStatusBar(){
     std::string msg="Now recording: _";
     std::string msg2=" :Motion detected:";
+    std::string msg3=" :Clip unavailable:";
     msg[msg.length()-1]=p->giveClipNumber();
     if(p->MotionLastMin()){
         msg.append(msg2);
+    }    
+    if(!p->isMotionClipAvailable()){
+        msg.append(msg3);
     }
     ui->statusBar->showMessage(msg.c_str());
+}
+
+void MainWindow::clearStatusBar(){
+    ui->statusBar->showMessage("Welcome to VLC Security Camera Solution",3000);
 }

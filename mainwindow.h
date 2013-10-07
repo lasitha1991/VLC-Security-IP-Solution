@@ -28,6 +28,8 @@ private slots:
 
     void updateStatusBar();
 
+    void clearStatusBar();
+
 private:
     Ui::MainWindow *ui;
 };
