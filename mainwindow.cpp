@@ -27,12 +27,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->display->setPalette( plt );
     p->setDisplayWidget(ui->display);
     p->load("0capture.mp4");
+    int optionCount=4;
+    std::string lenghtArray[optionCount];
+    lenghtArray[0]="15 seconds";
+    lenghtArray[1]="30 seconds";
+    lenghtArray[2]="60 seconds";
+    lenghtArray[3]="90 seconds";
 
-    ui->cmbClipLength->addItem("5");
-    ui->cmbClipLength->addItem("20");
-    ui->cmbClipLength->addItem("30");
-    ui->cmbClipLength->addItem("10");
+
+    for(int i=0;i<optionCount;i++){
+        ui->cmbClipLength->addItem(lenghtArray[i].c_str());
+    }
     ui->statusBar->showMessage("Welcome to VLC Security Camera Solution",4000);
+    connect(p,SIGNAL(statusUpdated()),this,SLOT(updateStatusBar()));
 }
 
 MainWindow::~MainWindow()
@@ -56,17 +63,18 @@ void MainWindow::setClient()
 void MainWindow::on_BtnStartCtsRecord_clicked()
 {
     setClient();
+    ui->cmbClipLength->setEnabled(false);
     if(!p->isRecording()){
         p->setRecording(true);
         p->saveWebcamToFile();
         ui->BtnStartCtsRecord->setText("Exit");
-        ui->statusBar->showMessage("Started",1000);
+        ui->statusBar->showMessage("Started",1000);        
     }else{
         //code to stop recording
         p->setRecording(false);
         p->deleteTempFile();
         ui->BtnStartCtsRecord->hide();
-        ui->statusBar->showMessage("wait until current stream finishes",1000);
+        ui->statusBar->showMessage("wait until current process finishes",1000);
     }
 }
 
@@ -74,7 +82,16 @@ void MainWindow::on_BtnStartCtsRecord_clicked()
 
 
 void MainWindow::on_cmbClipLength_currentIndexChanged(const QString &arg1)
-{
-    int l=arg1.toInt();
-    p->setClipLength(l);
+{    
+    p->setClipLength(arg1);
+}
+
+void MainWindow::updateStatusBar(){
+    std::string msg="Now recording: _";
+    std::string msg2=" :Motion detected:";
+    msg[msg.length()-1]=p->giveClipNumber();
+    if(p->MotionLastMin()){
+        msg.append(msg2);
+    }
+    ui->statusBar->showMessage(msg.c_str());
 }

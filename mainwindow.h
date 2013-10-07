@@ -26,6 +26,8 @@ private slots:
 
     void on_cmbClipLength_currentIndexChanged(const QString &arg1);
 
+    void updateStatusBar();
+
 private:
     Ui::MainWindow *ui;
 };

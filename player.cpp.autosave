@@ -307,12 +307,6 @@ void player::deleteTempFile(){
     std::string fnam="_capture.mp4";
     for(char i='0';i<=maxNoOfClips;i++){
         fnam[0]=i;
-        ifstream a_file ( fnam.c_str() );
-
-        if ( !a_file.is_open() ) {
-          // The file could not be opened
-            qDebug("Cannot open");
-        }
         if( remove( fnam.c_str())== 0 ){
             qDebug("File successfully deleted" );
         }

@@ -26,6 +26,7 @@ public:
     explicit player(QObject *parent = 0);
 
 signals:
+    void statusUpdated();
 
 public slots:
     void play();
@@ -59,7 +60,7 @@ public slots:
     void processMotionNotDetected();
     bool MotionLastMin();
 
-    void setClipLength(int length);
+    void setClipLength(QString length);
 private:
     std::string clientAddress;
     bool boolrecord;
